@@ -3,24 +3,24 @@
 @tailwind utilities;
 
 body {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'PT Sans', sans-serif;
 }
 
 @layer base {
   :root {
-    --background: 220 13% 95%;
+    --background: 220 13% 95%; /* #F0F2F5 - Light Gray */
     --foreground: 224 48% 10%;
     --card: 0 0% 100%;
     --card-foreground: 224 48% 10%;
     --popover: 0 0% 100%;
     --popover-foreground: 224 48% 10%;
-    --primary: 224 48% 26%;
+    --primary: 224 48% 26%; /* #203764 - Deep Navy Blue */
     --primary-foreground: 0 0% 98%;
     --secondary: 220 13% 90%;
     --secondary-foreground: 224 48% 20%;
     --muted: 220 13% 85%;
     --muted-foreground: 220 10% 40%;
-    --accent: 211 98% 73%;
+    --accent: 211 98% 73%; /* #77B5FE - Soft Sky Blue */
     --accent-foreground: 224 48% 10%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
@@ -84,5 +84,8 @@ body {
   }
   body {
     @apply bg-background text-foreground;
+  }
+  h1,h2,h3,h4,h5,h6 {
+    font-family: 'Playfair Display', serif;
   }
 }
