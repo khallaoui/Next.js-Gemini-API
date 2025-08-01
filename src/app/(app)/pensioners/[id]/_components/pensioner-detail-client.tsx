@@ -28,14 +28,16 @@ import {
   FileText,
   Loader2,
   Sparkles,
-  ArrowLeft
+  ArrowLeft,
+  FileClock
 } from "lucide-react";
 import Link from "next/link";
 
-import { type Pensioner, type Operation } from "@/lib/types";
+import { type Pensioner, type Operation, type Demande, type StatutDemande } from "@/lib/types";
 import pensionersData from "@/data/pensioners.json";
 import operationsData from "@/data/operations.json";
 import bankingData from "@/data/banking.json";
+import demandesData from "@/data/demandes.json";
 import { useToast } from "@/hooks/use-toast";
 import { generateRecordSummary } from "@/ai/flows/generate-record-summary";
 import { format } from "date-fns";
@@ -56,6 +58,10 @@ export default function PensionerDetailClient({ id }: { id: string }) {
 
   const banking = bankingData.find(
     (b) => b.ALLOC === parseInt(id)
+  );
+  
+  const demandes = demandesData.filter(
+    (d) => d.pensionerId === parseInt(id)
   );
 
 
@@ -124,6 +130,15 @@ export default function PensionerDetailClient({ id }: { id: string }) {
         case 'C': return 'Chèque';
         case 'P': return 'Prélèvement';
         default: return 'Inconnu';
+    }
+  }
+  
+  const getDemandeStatusVariant = (status: StatutDemande) => {
+    switch(status) {
+      case 'Approuvée': return 'default';
+      case 'Rejetée': return 'destructive';
+      case 'En cours': return 'secondary';
+      default: return 'outline';
     }
   }
 
@@ -288,65 +303,113 @@ export default function PensionerDetailClient({ id }: { id: string }) {
           </Card>
         </div>
       </div>
-      
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-3">
-            <History />
-            Historique des Opérations
-          </CardTitle>
-           <CardDescription>
-            Un journal de toutes les transactions financières pour ce pensionnaire.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="rounded-lg border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead>Montant</TableHead>
-                  <TableHead>Mode de Paiement</TableHead>
-                  <TableHead>Référence</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {operations.length > 0 ? (
-                  operations.map((op, index) => {
-                    const type = op.FCDMVT === "C" ? "Crédit" : "Débit";
-                    const date = new Date(op.FAAREG, op.FMMREG - 1, op.FJJREG);
-                    return (
-                      <TableRow key={index}>
-                        <TableCell>
-                          {format(date, "PPP", { locale: fr })}
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant={getOperationTypeVariant(type)}>{type}</Badge>
-                        </TableCell>
-                        <TableCell className="font-medium">
-                          {op.FMTREG.toLocaleString("fr-FR", {
-                            style: "currency",
-                            currency: "EUR",
-                          })}
-                        </TableCell>
-                        <TableCell>{getPaymentMethodText(op.FMDREG)}</TableCell>
-                        <TableCell className="font-mono text-xs">{op.FCHQBD || "N/A"}</TableCell>
-                      </TableRow>
-                    );
-                  })
-                ) : (
-                   <TableRow>
-                      <TableCell colSpan={5} className="h-24 text-center">
-                        Aucune opération trouvée.
-                      </TableCell>
+
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+        <Card>
+            <CardHeader>
+            <CardTitle className="flex items-center gap-3">
+                <History />
+                Historique des Opérations
+            </CardTitle>
+            <CardDescription>
+                Un journal de toutes les transactions financières pour ce pensionnaire.
+            </CardDescription>
+            </CardHeader>
+            <CardContent>
+            <div className="rounded-lg border">
+                <Table>
+                <TableHeader>
+                    <TableRow>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Type</TableHead>
+                    <TableHead>Montant</TableHead>
+                    <TableHead>Mode</TableHead>
                     </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </div>
-        </CardContent>
-      </Card>
+                </TableHeader>
+                <TableBody>
+                    {operations.length > 0 ? (
+                    operations.map((op, index) => {
+                        const type = op.FCDMVT === "C" ? "Crédit" : "Débit";
+                        const date = new Date(op.FAAREG, op.FMMREG - 1, op.FJJREG);
+                        return (
+                        <TableRow key={index}>
+                            <TableCell>
+                            {format(date, "PPP", { locale: fr })}
+                            </TableCell>
+                            <TableCell>
+                            <Badge variant={getOperationTypeVariant(type)}>{type}</Badge>
+                            </TableCell>
+                            <TableCell className="font-medium">
+                            {op.FMTREG.toLocaleString("fr-FR", {
+                                style: "currency",
+                                currency: "EUR",
+                            })}
+                            </TableCell>
+                            <TableCell>{getPaymentMethodText(op.FMDREG)}</TableCell>
+                        </TableRow>
+                        );
+                    })
+                    ) : (
+                    <TableRow>
+                        <TableCell colSpan={4} className="h-24 text-center">
+                            Aucune opération trouvée.
+                        </TableCell>
+                        </TableRow>
+                    )}
+                </TableBody>
+                </Table>>
+            </div>
+            </CardContent>
+        </Card>
+
+        <Card>
+            <CardHeader>
+            <CardTitle className="flex items-center gap-3">
+                <FileClock />
+                Historique des Demandes
+            </CardTitle>
+            <CardDescription>
+                Un journal des demandes soumises par ce pensionnaire.
+            </CardDescription>
+            </CardHeader>
+            <CardContent>
+                <div className="rounded-lg border">
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Date Soumission</TableHead>
+                                <TableHead>Type</TableHead>
+                                <TableHead>Statut</TableHead>
+                                <TableHead>Date Décision</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {demandes.length > 0 ? (
+                                demandes.map((demande) => (
+                                    <TableRow key={demande.id}>
+                                        <TableCell>{format(new Date(demande.submissionDate), "PPP", { locale: fr })}</TableCell>
+                                        <TableCell className="font-medium">{demande.type}</TableCell>
+                                        <TableCell>
+                                            <Badge variant={getDemandeStatusVariant(demande.status)}>{demande.status}</Badge>
+                                        </TableCell>
+                                        <TableCell>
+                                            {demande.decisionDate ? format(new Date(demande.decisionDate), "PPP", { locale: fr }) : "N/A"}
+                                        </TableCell>
+                                    </TableRow>
+                                ))
+                            ) : (
+                                <TableRow>
+                                    <TableCell colSpan={4} className="h-24 text-center">
+                                        Aucune demande trouvée.
+                                    </TableCell>
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
+                </div>
+            </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

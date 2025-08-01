@@ -1,0 +1,42 @@
+
+[
+  {
+    "id": "DEM001",
+    "pensionerId": 200001,
+    "type": "Liquidation de pension",
+    "status": "Approuvée",
+    "submissionDate": "2023-11-10T00:00:00.000Z",
+    "decisionDate": "2023-12-05T00:00:00.000Z"
+  },
+  {
+    "id": "DEM002",
+    "pensionerId": 200002,
+    "type": "Réclamation",
+    "status": "En cours",
+    "submissionDate": "2024-04-20T00:00:00.000Z"
+  },
+  {
+    "id": "DEM003",
+    "pensionerId": 200003,
+    "type": "Mise à jour du dossier",
+    "status": "Approuvée",
+    "submissionDate": "2024-01-15T00:00:00.000Z",
+    "decisionDate": "2024-01-20T00:00:00.000Z"
+  },
+  {
+    "id": "DEM004",
+    "pensionerId": 200004,
+    "type": "Liquidation de pension",
+    "status": "Approuvée",
+    "submissionDate": "2022-09-01T00:00:00.000Z",
+    "decisionDate": "2022-09-28T00:00:00.000Z"
+  },
+  {
+    "id": "DEM005",
+    "pensionerId": 200001,
+    "type": "Réclamation",
+    "status": "Rejetée",
+    "submissionDate": "2024-03-01T00:00:00.000Z",
+    "decisionDate": "2024-03-11T00:00:00.000Z"
+  }
+]

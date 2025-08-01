@@ -2,6 +2,18 @@ export type StatutAdherent = 'ACTIF' | 'INACTIF' | 'EN_ATTENTE';
 export type StatutRemboursement = 'EN_COURS' | 'COMPLETE' | 'REJETE';
 export type TypePrestation = 'RETRAITE' | 'ALLOCATION' | 'REMBOURSEMENT';
 
+export type StatutDemande = 'Approuvée' | 'Rejetée' | 'En cours' | 'En attente';
+export type TypeDemande = 'Liquidation de pension' | 'Réclamation' | 'Mise à jour du dossier';
+
+export interface Demande {
+  id: string;
+  pensionerId: number;
+  type: TypeDemande;
+  status: StatutDemande;
+  submissionDate: string; // ISO 8601 date string
+  decisionDate?: string; // ISO 8601 date string
+}
+
 export interface PersonalInfo {
   lastName: string;
   firstName: string;
