@@ -5,7 +5,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { BarChart3 } from "lucide-react";
+import { StatsCards } from "@/components/dashboard/stats-cards";
+import { PensionersByCityChart } from "@/components/statistics/pensioners-by-city-chart";
+import { PaymentMethodsChart } from "@/components/statistics/payment-methods-chart";
+import { MonthlyPaymentsChart } from "@/components/dashboard/monthly-payments-chart";
+
 
 export default function StatisticsPage() {
   return (
@@ -16,24 +20,38 @@ export default function StatisticsPage() {
           Key metrics and visualizations for administrators.
         </p>
       </div>
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <BarChart3 />
-            Reporting Dashboard
-          </CardTitle>
-          <CardDescription>
-            High-level statistics and KPIs will be displayed here.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center justify-center h-64">
-            <p className="text-muted-foreground">
-              Statistical charts and reports are coming soon.
-            </p>
-          </div>
-        </CardContent>
-      </Card>
+      
+      <StatsCards />
+
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle>Pensioners by City</CardTitle>
+            <CardDescription>Distribution of pensioners across different cities.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <PensionersByCityChart />
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Payment Methods</CardTitle>
+            <CardDescription>Breakdown of payment methods used.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <PaymentMethodsChart />
+          </CardContent>
+        </Card>
+      </div>
+       <Card>
+          <CardHeader>
+            <CardTitle>Monthly Payments Overview</CardTitle>
+            <CardDescription>A chart showing total benefits paid out each month.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <MonthlyPaymentsChart />
+          </CardContent>
+        </Card>
     </div>
   );
 }
