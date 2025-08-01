@@ -21,8 +21,8 @@ import { useToast } from "@/hooks/use-toast"
 import { Loader2 } from "lucide-react"
 
 const formSchema = z.object({
-  username: z.string().min(1, { message: "Username is required." }),
-  password: z.string().min(1, { message: "Password is required." }),
+  username: z.string().min(1, { message: "Le nom d'utilisateur est requis." }),
+  password: z.string().min(1, { message: "Le mot de passe est requis." }),
 })
 
 export function LoginForm() {
@@ -45,15 +45,15 @@ export function LoginForm() {
       if (values.username === "admin" && values.password === "admin123") {
         localStorage.setItem("cimr-insights-auth", "true")
         toast({
-          title: "Login Successful",
-          description: "Welcome back! Redirecting you to the dashboard.",
+          title: "Connexion réussie",
+          description: "Bienvenue ! Redirection vers le tableau de bord.",
         })
         router.push("/")
       } else {
         toast({
           variant: "destructive",
-          title: "Login Failed",
-          description: "Invalid username or password. Please try again.",
+          title: "Échec de la connexion",
+          description: "Nom d'utilisateur ou mot de passe invalide.",
         })
         setIsLoading(false)
       }
@@ -68,7 +68,7 @@ export function LoginForm() {
           name="username"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Username</FormLabel>
+              <FormLabel>Nom d'utilisateur</FormLabel>
               <FormControl>
                 <Input placeholder="admin" {...field} />
               </FormControl>
@@ -82,9 +82,9 @@ export function LoginForm() {
           render={({ field }) => (
             <FormItem>
                 <div className="flex items-center justify-between">
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel>Mot de passe</FormLabel>
                     <Link href="#" className="text-xs text-primary/90 hover:underline">
-                        Forgot password?
+                        Mot de passe oublié ?
                     </Link>
                 </div>
               <FormControl>
@@ -96,7 +96,7 @@ export function LoginForm() {
         />
         <Button type="submit" className="w-full" disabled={isLoading}>
           {isLoading && <Loader2 className="animate-spin" />}
-          Log In
+          Se connecter
         </Button>
       </form>
     </Form>

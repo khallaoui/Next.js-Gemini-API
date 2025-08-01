@@ -38,6 +38,7 @@ import bankingData from "@/data/banking.json";
 import { useToast } from "@/hooks/use-toast";
 import { generateRecordSummary } from "@/ai/flows/generate-record-summary";
 import { format } from "date-fns";
+import { fr } from 'date-fns/locale';
 
 export default function PensionerDetailClient({ id }: { id: string }) {
   const { toast } = useToast();
@@ -50,11 +51,11 @@ export default function PensionerDetailClient({ id }: { id: string }) {
 
   const operations = operationsData.filter(
     (o) => o.FNDP === parseInt(id)
-  ) as any[]; // Use any to access extra fields from json
+  );
 
   const banking = bankingData.find(
     (b) => b.ALLOC === parseInt(id)
-  ) as any | undefined; // Use any to access extra fields from json
+  );
 
 
   React.useEffect(() => {
@@ -97,15 +98,15 @@ export default function PensionerDetailClient({ id }: { id: string }) {
       const result = await generateRecordSummary({ pensionerRecord });
       setSummary(result.summary);
       toast({
-        title: "Summary Generated",
-        description: "AI-powered summary has been successfully created.",
+        title: "Résumé généré",
+        description: "Le résumé par l'IA a été créé avec succès.",
       });
     } catch (error) {
       console.error("Failed to generate summary:", error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Failed to generate AI summary. Please try again.",
+        title: "Erreur",
+        description: "Échec de la génération du résumé IA. Veuillez réessayer.",
       });
     } finally {
       setIsLoadingSummary(false);
@@ -123,12 +124,12 @@ export default function PensionerDetailClient({ id }: { id: string }) {
             <h1 className="font-headline text-3xl font-bold">
               {pensioner.personalInfo.firstName} {pensioner.personalInfo.lastName}
             </h1>
-            <p className="text-muted-foreground mt-1">Dossier No. {pensioner.SCPTE}</p>
+            <p className="text-muted-foreground mt-1">Dossier N° {pensioner.SCPTE}</p>
         </div>
         <Button asChild variant="outline">
             <Link href="/pensioners">
                 <ArrowLeft />
-                Back to List
+                Retour à la liste
             </Link>
         </Button>
       </div>
@@ -139,7 +140,7 @@ export default function PensionerDetailClient({ id }: { id: string }) {
             <CardHeader>
               <CardTitle className="flex items-center gap-3">
                 <User />
-                Personal Information
+                Informations Personnelles
               </CardTitle>
             </CardHeader>
             <CardContent className="grid grid-cols-2 gap-4 text-sm">
@@ -152,23 +153,23 @@ export default function PensionerDetailClient({ id }: { id: string }) {
                 <p className="text-muted-foreground">{pensioner.personalInfo.cin}</p>
               </div>
               <div>
-                <p className="font-medium">Date of Birth</p>
+                <p className="font-medium">Date de Naissance</p>
                 <p className="text-muted-foreground">
-                  {format(new Date(pensioner.personalInfo.dateOfBirth), "PPP")}
+                  {format(new Date(pensioner.personalInfo.dateOfBirth), "PPP", { locale: fr })}
                 </p>
               </div>
               <div>
-                <p className="font-medium">Gender</p>
+                <p className="font-medium">Sexe</p>
                 <p className="text-muted-foreground">
-                  {pensioner.personalInfo.gender === "M" ? "Male" : "Female"}
+                  {pensioner.personalInfo.gender === "M" ? "Masculin" : "Féminin"}
                 </p>
               </div>
               <div>
-                <p className="font-medium">Family Situation</p>
+                <p className="font-medium">Situation Familiale</p>
                 <p className="text-muted-foreground">{pensioner.personalInfo.familySituation}</p>
               </div>
               <div className="col-span-2">
-                <p className="font-medium">Address</p>
+                <p className="font-medium">Adresse</p>
                 <p className="text-muted-foreground">
                   {pensioner.personalInfo.address}
                 </p>
@@ -180,12 +181,12 @@ export default function PensionerDetailClient({ id }: { id: string }) {
             <CardHeader>
               <CardTitle className="flex items-center gap-3">
                 <FileText />
-                Pension Details
+                Détails de la Pension
               </CardTitle>
             </CardHeader>
             <CardContent className="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                    <p className="font-medium">Pension Code</p>
+                    <p className="font-medium">Code Pension</p>
                     <p className="text-muted-foreground">{pensioner.pensionCode}</p>
                 </div>
                 <div>
@@ -193,19 +194,19 @@ export default function PensionerDetailClient({ id }: { id: string }) {
                     <p className="text-muted-foreground">{pensioner.points}</p>
                 </div>
                 <div>
-                    <p className="font-medium">Calculated Net</p>
+                    <p className="font-medium">Net Calculé</p>
                     <p className="text-muted-foreground">{pensioner.netCalculated.toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}</p>
                 </div>
                  <div>
-                    <p className="font-medium">Paid Net</p>
+                    <p className="font-medium">Net Payé</p>
                     <p className="text-muted-foreground">{pensioner.netPaid.toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}</p>
                 </div>
                  <div>
-                    <p className="font-medium">Payment Method</p>
+                    <p className="font-medium">Mode de Paiement</p>
                     <p className="text-muted-foreground">{pensioner.paymentMethod}</p>
                 </div>
                 <div>
-                    <p className="font-medium">Status</p>
+                    <p className="font-medium">Statut</p>
                     <div className="text-muted-foreground"><Badge>{pensioner.status}</Badge></div>
                 </div>
             </CardContent>
@@ -217,14 +218,14 @@ export default function PensionerDetailClient({ id }: { id: string }) {
             <CardHeader>
               <CardTitle className="flex items-center gap-3">
                 <Landmark />
-                Banking Information
+                Informations Bancaires
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 text-sm">
               {banking && banking.VCPTE ? (
                 <>
                   <div>
-                    <p className="font-medium">Account Holder</p>
+                    <p className="font-medium">Titulaire du Compte</p>
                     <p className="text-muted-foreground">
                       {banking.VNOM1}
                     </p>
@@ -234,7 +235,7 @@ export default function PensionerDetailClient({ id }: { id: string }) {
                     <p className="text-muted-foreground font-mono text-xs break-all">{banking.VCPTE}</p>
                   </div>
                   <div>
-                    <p className="font-medium">Bank Address</p>
+                    <p className="font-medium">Adresse de la Banque</p>
                     <p className="text-muted-foreground">
                       {banking.VADR1}
                     </p>
@@ -242,7 +243,7 @@ export default function PensionerDetailClient({ id }: { id: string }) {
                 </>
               ) : (
                 <p className="text-muted-foreground">
-                  No banking information available for this pensioner.
+                  Aucune information bancaire disponible.
                 </p>
               )}
             </CardContent>
@@ -253,14 +254,14 @@ export default function PensionerDetailClient({ id }: { id: string }) {
               <CardTitle className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
                     <Sparkles className="text-primary"/>
-                    AI Summary
+                    Résumé IA
                 </div>
                 <Button onClick={handleGenerateSummary} disabled={isLoadingSummary} size="sm">
-                  {isLoadingSummary ? <Loader2 className="animate-spin" /> : 'Generate'}
+                  {isLoadingSummary ? <Loader2 className="animate-spin" /> : 'Générer'}
                 </Button>
               </CardTitle>
               <CardDescription>
-                AI-generated insights on this pensioner's record.
+                Aperçu généré par l'IA sur ce dossier.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -272,7 +273,7 @@ export default function PensionerDetailClient({ id }: { id: string }) {
                 </div>
               )}
               {summary && <div className="prose prose-sm dark:prose-invert text-foreground/90 whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: summary }} />}
-              {!summary && !isLoadingSummary && <p className="text-sm text-center text-muted-foreground py-4">Click 'Generate' to create a summary.</p>}
+              {!summary && !isLoadingSummary && <p className="text-sm text-center text-muted-foreground py-4">Cliquez sur 'Générer' pour créer un résumé.</p>}
             </CardContent>
           </Card>
         </div>
@@ -282,10 +283,10 @@ export default function PensionerDetailClient({ id }: { id: string }) {
         <CardHeader>
           <CardTitle className="flex items-center gap-3">
             <History />
-            Operations History
+            Historique des Opérations
           </CardTitle>
            <CardDescription>
-            A log of all financial transactions for this pensioner.
+            Un journal de toutes les transactions financières pour ce pensionnaire.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -295,9 +296,9 @@ export default function PensionerDetailClient({ id }: { id: string }) {
                 <TableRow>
                   <TableHead>Date</TableHead>
                   <TableHead>Type</TableHead>
-                  <TableHead>Amount</TableHead>
-                  <TableHead>Payment Method</TableHead>
-                  <TableHead>Reference</TableHead>
+                  <TableHead>Montant</TableHead>
+                  <TableHead>Mode de Paiement</TableHead>
+                  <TableHead>Référence</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -308,7 +309,7 @@ export default function PensionerDetailClient({ id }: { id: string }) {
                     return (
                       <TableRow key={index}>
                         <TableCell>
-                          {format(date, "PPP")}
+                          {format(date, "PPP", { locale: fr })}
                         </TableCell>
                         <TableCell>
                           <Badge variant={getOperationTypeVariant(type)}>{type}</Badge>
@@ -327,7 +328,7 @@ export default function PensionerDetailClient({ id }: { id: string }) {
                 ) : (
                    <TableRow>
                       <TableCell colSpan={5} className="h-24 text-center">
-                        No operations found.
+                        Aucune opération trouvée.
                       </TableCell>
                     </TableRow>
                 )}

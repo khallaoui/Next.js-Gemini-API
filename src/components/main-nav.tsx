@@ -19,10 +19,10 @@ export function MainNav() {
   const pathname = usePathname()
 
   const menuItems = [
-    { href: "/", label: "Dashboard", icon: Home },
-    { href: "/pensioners", label: "Pensioners", icon: Users },
-    { href: "/analysis", label: "Analysis", icon: BrainCircuit },
-    { href: "/statistics", label: "Statistics", icon: BarChart3 },
+    { href: "/", label: "Tableau de Bord", icon: Home },
+    { href: "/pensioners", label: "Pensionnaires", icon: Users },
+    { href: "/analysis", label: "Analyse IA", icon: BrainCircuit },
+    { href: "/statistics", label: "Statistiques", icon: BarChart3 },
   ]
 
   return (

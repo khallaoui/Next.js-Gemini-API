@@ -18,10 +18,10 @@ export default function StatisticsPage() {
       <header>
         <h1 className="font-headline text-3xl font-bold flex items-center gap-3">
             <BarChart3 className="h-8 w-8"/>
-            Statistics & Reports
+            Statistiques & Rapports
         </h1>
         <p className="text-muted-foreground mt-1">
-          Key metrics and visualizations for administrators.
+          Indicateurs clés et visualisations pour les administrateurs.
         </p>
       </header>
       
@@ -30,8 +30,8 @@ export default function StatisticsPage() {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>Pensioners by City</CardTitle>
-            <CardDescription>Distribution of pensioners across different cities.</CardDescription>
+            <CardTitle>Pensionnaires par Ville</CardTitle>
+            <CardDescription>Répartition des pensionnaires à travers différentes villes.</CardDescription>
           </CardHeader>
           <CardContent>
             <PensionersByCityChart />
@@ -39,8 +39,8 @@ export default function StatisticsPage() {
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Payment Methods</CardTitle>
-            <CardDescription>Breakdown of payment methods used.</CardDescription>
+            <CardTitle>Modes de Paiement</CardTitle>
+            <CardDescription>Répartition des modes de paiement utilisés.</CardDescription>
           </CardHeader>
           <CardContent>
             <PaymentMethodsChart />
@@ -49,8 +49,8 @@ export default function StatisticsPage() {
       </div>
        <Card>
           <CardHeader>
-            <CardTitle>Monthly Payments Overview</CardTitle>
-            <CardDescription>A chart showing total benefits paid out each month.</CardDescription>
+            <CardTitle>Aperçu des Paiements Mensuels</CardTitle>
+            <CardDescription>Un graphique montrant le total des prestations payées chaque mois.</CardDescription>
           </CardHeader>
           <CardContent>
             <MonthlyPaymentsChart />

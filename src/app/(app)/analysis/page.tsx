@@ -46,15 +46,15 @@ export default function AnalysisPage() {
       });
       setResult(response);
       toast({
-        title: "Analysis Complete",
-        description: "The pension data has been successfully analyzed.",
+        title: "Analyse terminée",
+        description: "Les données des pensions ont été analysées avec succès.",
       });
     } catch (error) {
       console.error("Analysis failed:", error);
       toast({
         variant: "destructive",
-        title: "Analysis Failed",
-        description: "An error occurred while analyzing the data.",
+        title: "Échec de l'analyse",
+        description: "Une erreur s'est produite lors de l'analyse des données.",
       });
     } finally {
       setIsLoading(false);
@@ -66,27 +66,26 @@ export default function AnalysisPage() {
       <header>
         <h1 className="font-headline text-3xl font-bold flex items-center gap-3">
             <BrainCircuit className="h-8 w-8 text-primary" />
-            Data Analysis Tool
+            Outil d'Analyse de Données
         </h1>
         <p className="text-muted-foreground mt-1">
-          Use AI to analyze pension data, identify trends, and project future
-          liabilities.
+          Utilisez l'IA pour analyser les données des pensions, identifier les tendances et projeter les engagements futurs.
         </p>
       </header>
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>Analysis Configuration</CardTitle>
+            <CardTitle>Configuration de l'Analyse</CardTitle>
             <CardDescription>
-              Input your data and select the analysis parameters.
+              Saisissez vos données et sélectionnez les paramètres d'analyse.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="pension-data">Pension Data (JSON format)</Label>
+              <Label htmlFor="pension-data">Données des Pensions (format JSON)</Label>
               <Textarea
                 id="pension-data"
-                placeholder="Paste your JSON data here"
+                placeholder="Collez vos données JSON ici"
                 value={pensionData}
                 onChange={(e) => setPensionData(e.target.value)}
                 className="h-64 font-code text-xs"
@@ -94,29 +93,29 @@ export default function AnalysisPage() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="analysis-type">Analysis Type</Label>
+                <Label htmlFor="analysis-type">Type d'Analyse</Label>
                 <Select
                   value={analysisType}
                   onValueChange={setAnalysisType}
                 >
                   <SelectTrigger id="analysis-type">
-                    <SelectValue placeholder="Select type" />
+                    <SelectValue placeholder="Sélectionnez le type" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="trend identification">Trend ID</SelectItem>
-                    <SelectItem value="data comparison">Comparison</SelectItem>
-                    <SelectItem value="liability projection">Projection</SelectItem>
+                    <SelectItem value="trend identification">Identification de tendance</SelectItem>
+                    <SelectItem value="data comparison">Comparaison de données</SelectItem>
+                    <SelectItem value="liability projection">Projection des engagements</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="report-format">Report Format</Label>
+                <Label htmlFor="report-format">Format du Rapport</Label>
                 <Select value={reportFormat} onValueChange={setReportFormat}>
                   <SelectTrigger id="report-format">
-                    <SelectValue placeholder="Select format" />
+                    <SelectValue placeholder="Sélectionnez le format" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="text">Text</SelectItem>
+                    <SelectItem value="text">Texte</SelectItem>
                     <SelectItem value="JSON">JSON</SelectItem>
                     <SelectItem value="CSV">CSV</SelectItem>
                   </SelectContent>
@@ -127,7 +126,7 @@ export default function AnalysisPage() {
           <CardFooter>
             <Button onClick={handleAnalyze} disabled={isLoading}>
               {isLoading ? <Loader2 className="animate-spin" /> : <Sparkles />}
-              Analyze Data
+              Analyser les Données
             </Button>
           </CardFooter>
         </Card>
@@ -136,10 +135,10 @@ export default function AnalysisPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-3">
                 <BarChartBig />
-                Analysis Results
+                Résultats de l'Analyse
             </CardTitle>
             <CardDescription>
-              The generated report and summary will appear here.
+              Le rapport et le résumé générés apparaîtront ici.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -165,11 +164,11 @@ export default function AnalysisPage() {
             {result ? (
               <>
                 <div>
-                  <h3 className="flex items-center gap-2 text-lg font-semibold mb-2 font-headline"><Sparkles className="h-5 w-5 text-primary" />Summary</h3>
+                  <h3 className="flex items-center gap-2 text-lg font-semibold mb-2 font-headline"><Sparkles className="h-5 w-5 text-primary" />Résumé</h3>
                   <div className="prose prose-sm dark:prose-invert text-muted-foreground whitespace-pre-wrap">{result.summary}</div>
                 </div>
                 <div>
-                  <h3 className="flex items-center gap-2 text-lg font-semibold mb-2 font-headline"><FileText className="h-5 w-5 text-primary" />Report</h3>
+                  <h3 className="flex items-center gap-2 text-lg font-semibold mb-2 font-headline"><FileText className="h-5 w-5 text-primary" />Rapport</h3>
                   <pre className="text-xs bg-muted/50 p-4 rounded-md overflow-x-auto">
                     <code>{result.report}</code>
                   </pre>
@@ -177,7 +176,7 @@ export default function AnalysisPage() {
               </>
             ) : !isLoading && (
               <div className="flex items-center justify-center h-full min-h-[200px] rounded-lg border border-dashed">
-                <p className="text-muted-foreground">Results will be shown here after analysis.</p>
+                <p className="text-muted-foreground">Les résultats s'afficheront ici après l'analyse.</p>
               </div>
             )}
           </CardContent>

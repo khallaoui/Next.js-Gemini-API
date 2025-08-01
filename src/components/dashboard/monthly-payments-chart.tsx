@@ -10,17 +10,17 @@ import {
 } from "@/components/ui/chart"
 
 const chartData = [
-  { month: "January", payments: 186000 },
-  { month: "February", payments: 305000 },
-  { month: "March", payments: 237000 },
-  { month: "April", payments: 273000 },
-  { month: "May", payments: 209000 },
-  { month: "June", payments: 214000 },
+  { month: "Janvier", payments: 186000 },
+  { month: "Février", payments: 305000 },
+  { month: "Mars", payments: 237000 },
+  { month: "Avril", payments: 273000 },
+  { month: "Mai", payments: 209000 },
+  { month: "Juin", payments: 214000 },
 ]
 
 const chartConfig = {
   payments: {
-    label: "Payments",
+    label: "Paiements",
     color: "hsl(var(--primary))",
   },
 } satisfies ChartConfig
@@ -44,7 +44,7 @@ export function MonthlyPaymentsChart() {
             content={<ChartTooltipContent 
                 formatter={(value, name) => (
                     <div className="flex flex-col">
-                        <span className="font-medium">{name}</span>
+                        <span className="font-medium">{name === 'payments' ? 'Paiements' : name}</span>
                         <span className="text-muted-foreground">{new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(Number(value))}</span>
                     </div>
                 )}

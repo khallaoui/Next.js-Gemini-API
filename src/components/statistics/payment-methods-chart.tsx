@@ -4,13 +4,6 @@ import * as React from "react"
 import { Label, Pie, PieChart } from "recharts"
 
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
@@ -20,7 +13,7 @@ import pensionersData from "@/data/pensioners.json"
 
 const chartConfig = {
   pensioners: {
-    label: "Pensioners",
+    label: "Pensionnaires",
   },
   Virement: {
     label: "Virement",
@@ -35,7 +28,7 @@ const chartConfig = {
 export function PaymentMethodsChart() {
     const chartData = React.useMemo(() => {
         const methodCounts = pensionersData.reduce((acc, p) => {
-          acc[p.MODREG] = (acc[p.MODREG] || 0) + 1
+          acc[p.paymentMethod] = (acc[p.paymentMethod] || 0) + 1
           return acc
         }, {} as Record<string, number>)
     
@@ -89,7 +82,7 @@ export function PaymentMethodsChart() {
                         y={(viewBox.cy || 0) + 24}
                         className="fill-muted-foreground"
                         >
-                        Pensioners
+                        Pensionnaires
                         </tspan>
                     </text>
                     )

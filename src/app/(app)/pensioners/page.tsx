@@ -77,23 +77,23 @@ export default function PensionersPage() {
       <header>
         <h1 className="font-headline text-3xl font-bold flex items-center gap-3">
             <Users className="h-8 w-8" />
-            Pensioner Records
+            Dossiers des Pensionnaires
         </h1>
         <p className="text-muted-foreground mt-1">
-          Search, filter, and manage pensioner records.
+          Recherchez, filtrez et gérez les dossiers des pensionnaires.
         </p>
       </header>
 
       <Card>
         <CardHeader>
-            <CardTitle>Filters</CardTitle>
-            <CardDescription>Refine the list of pensioners using the filters below.</CardDescription>
+            <CardTitle>Filtres</CardTitle>
+            <CardDescription>Affinez la liste des pensionnaires à l'aide des filtres ci-dessous.</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col md:flex-row gap-4">
            <div className="relative flex-1">
              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search by name, matricule, or dossier..."
+              placeholder="Rechercher par nom, matricule, ou dossier..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -102,24 +102,24 @@ export default function PensionersPage() {
           <div className="grid grid-cols-2 gap-4 md:flex">
              <Select value={selectedCity} onValueChange={setSelectedCity}>
               <SelectTrigger className="w-full md:w-[180px]">
-                <SelectValue placeholder="Filter by City" />
+                <SelectValue placeholder="Filtrer par Ville" />
               </SelectTrigger>
               <SelectContent>
                 {cities.map((city) => (
                   <SelectItem key={city} value={city}>
-                    {city === "all" ? "All Cities" : city}
+                    {city === "all" ? "Toutes les villes" : city}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
             <Select value={selectedPaymentMethod} onValueChange={setSelectedPaymentMethod}>
               <SelectTrigger className="w-full md:w-[180px]">
-                <SelectValue placeholder="Filter by Payment" />
+                <SelectValue placeholder="Filtrer par Paiement" />
               </SelectTrigger>
               <SelectContent>
                 {paymentMethods.map((method) => (
                   <SelectItem key={method} value={method}>
-                    {method === "all" ? "All Payments" : method}
+                    {method === "all" ? "Tous les paiements" : method}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -134,12 +134,12 @@ export default function PensionersPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Dossier No.</TableHead>
+                  <TableHead>N° Dossier</TableHead>
                   <TableHead>Matricule</TableHead>
-                  <TableHead>Full Name</TableHead>
-                  <TableHead>Net Paid</TableHead>
-                  <TableHead>City</TableHead>
-                  <TableHead>Payment Method</TableHead>
+                  <TableHead>Nom Complet</TableHead>
+                  <TableHead>Net Payé</TableHead>
+                  <TableHead>Ville</TableHead>
+                  <TableHead>Mode de Paiement</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -166,7 +166,7 @@ export default function PensionersPage() {
                         <Button asChild variant="ghost" size="sm">
                           <Link href={`/pensioners/${pensioner.SCPTE}`}>
                             <Eye className="mr-2" />
-                            View Details
+                            Voir Détails
                           </Link>
                         </Button>
                       </TableCell>
@@ -175,7 +175,7 @@ export default function PensionersPage() {
                 ) : (
                   <TableRow>
                     <TableCell colSpan={7} className="h-24 text-center">
-                      No results found.
+                      Aucun résultat trouvé.
                     </TableCell>
                   </TableRow>
                 )}

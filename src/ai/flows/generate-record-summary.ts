@@ -13,13 +13,13 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const GenerateRecordSummaryInputSchema = z.object({
-  pensionerRecord: z.string().describe("The pensioner's complete record in JSON format, including personal info, operations, and banking details."),
+  pensionerRecord: z.string().describe("Le dossier complet du pensionnaire au format JSON, incluant les informations personnelles, les opérations et les détails bancaires."),
 });
 
 export type GenerateRecordSummaryInput = z.infer<typeof GenerateRecordSummaryInputSchema>;
 
 const GenerateRecordSummaryOutputSchema = z.object({
-  summary: z.string().describe('A concise, easy-to-understand summary of the pensioner record in markdown format.'),
+  summary: z.string().describe('Un résumé concis et facile à comprendre du dossier du pensionnaire au format markdown.'),
 });
 
 export type GenerateRecordSummaryOutput = z.infer<typeof GenerateRecordSummaryOutputSchema>;
@@ -32,19 +32,19 @@ const generateRecordSummaryPrompt = ai.definePrompt({
   name: 'generateRecordSummaryPrompt',
   input: {schema: GenerateRecordSummaryInputSchema},
   output: {schema: GenerateRecordSummaryOutputSchema},
-  prompt: `You are an AI assistant that summarizes pensioner records for a case manager.
+  prompt: `Vous êtes un assistant IA qui résume les dossiers des pensionnaires pour un gestionnaire de cas. La réponse DOIT être en français.
 
-  Given the following pensioner record:
+  Étant donné le dossier du pensionnaire suivant :
   \`\`\`json
   {{pensionerRecord}}
   \`\`\`
 
-  Generate a concise summary in markdown bullet points. Highlight key information such as:
-  - Total benefits paid vs. calculated net.
-  - Notable changes or trends in payment history (e.g., recent debits).
-  - Any potential discrepancies or points of interest (e.g., missing banking info for 'Virement' payment method).
+  Générez un résumé concis sous forme de liste à puces en markdown. Mettez en évidence les informations clés telles que :
+  - Le total des prestations versées par rapport au net calculé.
+  - Les changements ou tendances notables dans l'historique des paiements (par exemple, les débits récents).
+  - Toute anomalie potentielle ou point d'intérêt (par exemple, des informations bancaires manquantes pour le mode de paiement 'Virement').
   
-  The summary should be easy to read and quickly provide actionable insights into the pensioner's financial status. Ensure the output is valid markdown.`,
+  Le résumé doit être facile à lire et fournir rapidement des informations exploitables sur la situation financière du pensionnaire. Assurez-vous que la sortie est un markdown valide.`,
 });
 
 const generateRecordSummaryFlow = ai.defineFlow(

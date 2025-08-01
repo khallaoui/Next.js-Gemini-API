@@ -1,4 +1,3 @@
-// src/ai/flows/analyze-pension-data.ts
 'use server';
 
 /**
@@ -17,24 +16,24 @@ const AnalyzePensionDataInputSchema = z.object({
   pensionData: z
     .string()
     .describe(
-      'Pension data in JSON format. It should include historical records of pensioner demographics, contribution history, and payout information.'
+      'Données de pension au format JSON. Elles doivent inclure les dossiers historiques sur les données démographiques des pensionnés, l’historique des cotisations et les informations sur les paiements.'
     ),
   analysisType: z
     .string()
     .describe(
-      'The type of analysis to perform. Options include: trend identification, data comparison, and liability projection.'
+      "Le type d'analyse à effectuer. Options : identification des tendances, comparaison des données et projection des engagements."
     ),
   reportFormat: z
     .string()
     .describe(
-      'The desired format for the analysis report. Options include: text, JSON, or CSV.'
+      'Le format souhaité pour le rapport d’analyse. Options : texte, JSON ou CSV.'
     ),
 });
 export type AnalyzePensionDataInput = z.infer<typeof AnalyzePensionDataInputSchema>;
 
 const AnalyzePensionDataOutputSchema = z.object({
-  report: z.string().describe('The analysis report in the specified format. This should be a detailed, structured output.'),
-  summary: z.string().describe('A brief, insightful summary of the key findings from the analysis.'),
+  report: z.string().describe('Le rapport d’analyse dans le format spécifié. Il doit s’agir d’une sortie détaillée et structurée.'),
+  summary: z.string().describe('Un résumé bref et perspicace des principales conclusions de l’analyse.'),
 });
 export type AnalyzePensionDataOutput = z.infer<typeof AnalyzePensionDataOutputSchema>;
 
@@ -46,19 +45,19 @@ const analyzePensionDataPrompt = ai.definePrompt({
   name: 'analyzePensionDataPrompt',
   input: {schema: AnalyzePensionDataInputSchema},
   output: {schema: AnalyzePensionDataOutputSchema},
-  prompt: `You are an expert pension data analyst. Your task is to analyze the provided pension data based on the requested analysis type and generate a report in the specified format.
+  prompt: `Vous êtes un analyste expert en données de pension. Votre tâche est d'analyser les données de pension fournies en fonction du type d'analyse demandé et de générer un rapport dans le format spécifié. La réponse DOIT être en français.
 
-You must provide a detailed, well-structured report and a concise, insightful summary of your findings.
+Vous devez fournir un rapport détaillé et bien structuré ainsi qu'un résumé concis et perspicace de vos conclusions.
 
-**Pension Data:**
+**Données de Pension :**
 \`\`\`json
 {{{pensionData}}}
 \`\`\`
 
-**Analysis Type:** {{{analysisType}}}
-**Report Format:** {{{reportFormat}}}
+**Type d'Analyse :** {{{analysisType}}}
+**Format du Rapport :** {{{reportFormat}}}
 
-Begin the analysis now. Structure your response clearly.`,
+Commencez l'analyse maintenant. Structurez clairement votre réponse.`,
 });
 
 

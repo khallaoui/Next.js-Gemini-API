@@ -13,28 +13,28 @@ import {
 } from "@/components/ui/chart"
 import pensionersData from "@/data/pensioners.json"
 
-const chartConfig = {
-  pensioners: {
-    label: "Pensioners",
+// Dynamically generate chartConfig from data
+const cityCounts = pensionersData.reduce((acc, p) => {
+  const city = p.personalInfo.ville;
+  acc[city] = (acc[city] || 0) + 1
+  return acc
+}, {} as Record<string, number>)
+
+const chartConfig = Object.keys(cityCounts).reduce((acc, city, index) => {
+  acc[city] = {
+    label: city,
+    color: `hsl(var(--chart-${index + 1}))`,
+  }
+  return acc
+}, {
+   pensioners: {
+    label: "Pensionnaires",
   },
-  Paris: {
-    label: "Paris",
-    color: "hsl(var(--chart-1))",
-  },
-  Marseille: {
-    label: "Marseille",
-    color: "hsl(var(--chart-2))",
-  },
-} satisfies ChartConfig
+} as ChartConfig)
+
 
 export function PensionersByCityChart() {
   const chartData = React.useMemo(() => {
-    const cityCounts = pensionersData.reduce((acc, p) => {
-      const city = p.personalInfo.ville;
-      acc[city] = (acc[city] || 0) + 1
-      return acc
-    }, {} as Record<string, number>)
-
     return Object.entries(cityCounts).map(([city, count]) => ({
       city,
       pensioners: count,
@@ -50,7 +50,7 @@ export function PensionersByCityChart() {
       <PieChart>
         <ChartTooltip
           cursor={false}
-          content={<ChartTooltipContent hideLabel />}
+          content={<ChartTooltipContent hideLabel nameKey="city" />}
         />
         <Pie
           data={chartData}

@@ -16,10 +16,10 @@ export default function DashboardPage() {
       <header>
         <h1 className="text-3xl font-bold font-headline flex items-center gap-3">
           <Home className="h-8 w-8" />
-          Dashboard
+          Tableau de Bord
         </h1>
         <p className="text-muted-foreground mt-1">
-          An overview of pensioner data and activities.
+          Un aperçu des données et activités des pensionnaires.
         </p>
       </header>
 
@@ -28,8 +28,8 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
         <Card className="lg:col-span-3">
           <CardHeader>
-            <CardTitle>Monthly Payments Overview</CardTitle>
-            <CardDescription>A chart showing total benefits paid out each month.</CardDescription>
+            <CardTitle>Aperçu des Paiements Mensuels</CardTitle>
+            <CardDescription>Un graphique montrant le total des prestations payées chaque mois.</CardDescription>
           </CardHeader>
           <CardContent>
             <MonthlyPaymentsChart />
@@ -37,8 +37,8 @@ export default function DashboardPage() {
         </Card>
         <Card className="lg:col-span-2">
           <CardHeader>
-            <CardTitle>Recent Activity</CardTitle>
-            <CardDescription>A feed of recent system events and actions.</CardDescription>
+            <CardTitle>Activité Récente</CardTitle>
+            <CardDescription>Un flux des événements et actions récents du système.</CardDescription>
           </CardHeader>
           <CardContent>
             <RecentActivity />

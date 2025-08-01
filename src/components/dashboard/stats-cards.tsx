@@ -26,27 +26,29 @@ export function StatsCards() {
     // For now, let's assume the last digit of their ID represents joining month for demo purposes.
     return (p.SCPTE % 12) + 1 === currentMonth;
   }).length;
+  
+  const monthName = new Date().toLocaleString("fr-FR", { month: "long" });
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">
-            Total Pensioners
+            Total des Pensionnaires
           </CardTitle>
           <Users className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{totalPensioners}</div>
           <p className="text-xs text-muted-foreground">
-            Total active and retired members
+            Total des membres actifs et retraités
           </p>
         </CardContent>
       </Card>
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">
-            Benefits Paid (This Month)
+            Prestations Payées (Ce Mois-ci)
           </CardTitle>
           <Euro className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
@@ -58,28 +60,27 @@ export function StatsCards() {
             })}
           </div>
           <p className="text-xs text-muted-foreground">
-            Total amount disbursed in{" "}
-            {new Date().toLocaleString("default", { month: "long" })}
+            Montant total décaissé en {monthName}
           </p>
         </CardContent>
       </Card>
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">
-            New Pensioners (This Month)
+            Nouveaux Pensionnaires (Ce Mois-ci)
           </CardTitle>
           <CalendarClock className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">+{newPensionersThisMonth}</div>
           <p className="text-xs text-muted-foreground">
-            New members this month
+            Nouveaux membres ce mois-ci
           </p>
         </CardContent>
       </Card>
        <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Payment Methods</CardTitle>
+          <CardTitle className="text-sm font-medium">Modes de Paiement</CardTitle>
           <Landmark className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>

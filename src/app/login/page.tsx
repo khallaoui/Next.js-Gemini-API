@@ -13,14 +13,14 @@ export default function LoginPage() {
               CIMR Insights
             </h1>
             <p className="mt-2 text-sm text-muted-foreground">
-              Welcome back. Please log in to your account.
+              Bienvenue. Veuillez vous connecter à votre compte.
             </p>
         </div>
         <div className="bg-card p-6 rounded-lg border shadow-sm">
             <LoginForm />
         </div>
         <p className="text-center text-xs text-muted-foreground">
-          &copy; {new Date().getFullYear()} CIMR. All rights reserved.
+          &copy; {new Date().getFullYear()} CIMR. Tous droits réservés.
         </p>
       </div>
     </div>

@@ -9,7 +9,6 @@ import { Button } from "../ui/button";
 import { ArrowRight } from "lucide-react";
 
 export function RecentActivity() {
-  // Sort operations by date in descending order and take the first 5
   const recentOperations = operationsData
     .sort((a, b) => {
       const dateA = new Date(a.FAAREG, a.FMMREG - 1, a.FJJREG);
@@ -21,14 +20,13 @@ export function RecentActivity() {
   const getPensionerInitials = (pensionerId: number) => {
     const pensioner = pensionersData.find((p) => p.SCPTE === pensionerId);
     if (!pensioner) return "??";
-    const [firstName, lastName] = [pensioner.NOM2, pensioner.NOM1];
-    return `${firstName?.[0] ?? ""}${lastName?.[0] ?? ""}`.toUpperCase();
+    return `${pensioner.personalInfo.firstName?.[0] ?? ""}${pensioner.personalInfo.lastName?.[0] ?? ""}`.toUpperCase();
   };
   
   const getPensionerName = (pensionerId: number) => {
     const pensioner = pensionersData.find((p) => p.SCPTE === pensionerId);
-    if (!pensioner) return "Unknown Pensioner";
-    return `${pensioner.NOM2} ${pensioner.NOM1}`;
+    if (!pensioner) return "Pensionnaire inconnu";
+    return `${pensioner.personalInfo.firstName} ${pensioner.personalInfo.lastName}`;
   }
 
   return (
@@ -42,7 +40,7 @@ export function RecentActivity() {
             <div className="grid gap-1 text-sm">
                 <p className="font-medium leading-none">
                     <Link href={`/pensioners/${op.FNDP}`} className="hover:underline">
-                        {op.FCDMVT === "C" ? "Credit" : "Debit"} to {getPensionerName(op.FNDP)}
+                        {op.FCDMVT === "C" ? "Crédit" : "Débit"} à {getPensionerName(op.FNDP)}
                     </Link>
                 </p>
                 <p className="text-muted-foreground">
@@ -57,7 +55,7 @@ export function RecentActivity() {
           </div>
         ))
       ) : (
-        <p className="text-sm text-muted-foreground">No recent activity to display.</p>
+        <p className="text-sm text-muted-foreground">Aucune activité récente à afficher.</p>
       )}
        <Button
         variant="outline"
@@ -65,7 +63,7 @@ export function RecentActivity() {
         asChild
       >
         <Link href="/statistics">
-            View All Reports
+            Voir tous les rapports
             <ArrowRight className="ml-2 h-4 w-4" />
         </Link>
       </Button>

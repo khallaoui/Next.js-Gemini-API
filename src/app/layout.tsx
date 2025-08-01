@@ -16,7 +16,7 @@ const lexend = Lexend({
 
 
 export const metadata: Metadata = {
-  title: 'CIMR Insights',
+  title: 'Portail de Gestion CIMR',
   description: 'Portail de Gestion CIMR',
 };
 
@@ -26,7 +26,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="fr" suppressHydrationWarning>
       <body className={`${inter.variable} ${lexend.variable} font-body antialiased`}>
         {children}
         <Toaster />
