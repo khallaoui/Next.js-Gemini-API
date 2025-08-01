@@ -117,6 +117,15 @@ export default function PensionerDetailClient({ id }: { id: string }) {
   const getOperationTypeVariant = (type: string) => {
     return type === "Crédit" ? "default" : "destructive";
   };
+  
+  const getPaymentMethodText = (code: string) => {
+    switch (code) {
+        case 'V': return 'Virement';
+        case 'C': return 'Chèque';
+        case 'P': return 'Prélèvement';
+        default: return 'Inconnu';
+    }
+  }
 
   return (
     <div className="flex flex-col gap-6">
@@ -321,7 +330,7 @@ export default function PensionerDetailClient({ id }: { id: string }) {
                             currency: "EUR",
                           })}
                         </TableCell>
-                        <TableCell>{op.FMDREG}</TableCell>
+                        <TableCell>{getPaymentMethodText(op.FMDREG)}</TableCell>
                         <TableCell className="font-mono text-xs">{op.FCHQBD || "N/A"}</TableCell>
                       </TableRow>
                     );
@@ -341,5 +350,3 @@ export default function PensionerDetailClient({ id }: { id: string }) {
     </div>
   );
 }
-
-    

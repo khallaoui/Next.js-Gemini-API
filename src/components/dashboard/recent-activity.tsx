@@ -29,6 +29,15 @@ export function RecentActivity() {
     if (!pensioner) return "Pensionnaire inconnu";
     return `${pensioner.personalInfo.firstName} ${pensioner.personalInfo.lastName}`;
   }
+  
+  const getPaymentMethodText = (code: string) => {
+    switch (code) {
+        case 'V': return 'Virement';
+        case 'C': return 'Chèque';
+        case 'P': return 'Prélèvement';
+        default: return 'Inconnu';
+    }
+  }
 
   return (
     <div className="space-y-4">
@@ -45,7 +54,7 @@ export function RecentActivity() {
                     </Link>
                 </p>
                 <p className="text-muted-foreground">
-                    {op.FMTREG.toLocaleString("fr-FR", { style: "currency", currency: "EUR" })} via {op.FMDREG}
+                    {op.FMTREG.toLocaleString("fr-FR", { style: "currency", currency: "EUR" })} via {getPaymentMethodText(op.FMDREG)}
                 </p>
             </div>
             <div className="ml-auto font-medium">

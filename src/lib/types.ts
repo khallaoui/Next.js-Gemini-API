@@ -26,14 +26,30 @@ export interface Pensioner {
 }
 
 export interface Operation {
-  FNDP: number; // Corresponds to SCPTE, references accounts.account_id
-  FCDMVT: 'C' | 'D'; // C for Credit, D for Debit
-  FMTREG: number;
-  FJJREG: number; // Day
-  FMMREG: number; // Month
-  FAAREG: number; // Year
-  FMDREG: string;
-  FCHQBD: string;
+  FCDMVT: string;     // CHAR(1)
+  FCDRET: number;     // DECIMAL(1, 0)
+  FNDP: number;       // DECIMAL(7, 0)
+  FJJCR: number;      // DECIMAL(2, 0)
+  FMMCR: number;      // DECIMAL(2, 0)
+  FAACR: number;      // DECIMAL(4, 0)
+  FMMECH: number;     // DECIMAL(2, 0)
+  FAAECH: number;     // DECIMAL(4, 0)
+  FMDREG: string;     // CHAR(1)
+  FJLCR: number;      // DECIMAL(2, 0)
+  FSJLCR: string;     // CHAR(3)
+  FMTCR: number;      // DECIMAL(8, 2)
+  FMTREG: number;     // DECIMAL(8, 2)
+  FJJREG: number;     // DECIMAL(2, 0)
+  FMMREG: number;     // DECIMAL(2, 0)
+  FAAREG: number;     // DECIMAL(4, 0)
+  FJLREG: number;     // DECIMAL(2, 0)
+  FSJREG: string;     // CHAR(3)
+  FCHQBD: string;     // CHAR(7)
+  FORD: string;       // CHAR(1)
+  FCOD1: number;      // DECIMAL(2, 0)
+  FCOD2: string;      // CHAR(2)
+  FMONT1: number;     // DECIMAL(9, 2)
+  FMONT2: number;     // DECIMAL(9, 2)
 }
 
 export interface Banking {
