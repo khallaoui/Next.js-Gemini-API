@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/card"
 import { StatsCards } from "@/components/dashboard/stats-cards"
 import { MonthlyPaymentsChart } from "@/components/dashboard/monthly-payments-chart"
+import { RecentActivity } from "@/components/dashboard/recent-activity"
 
 export default function DashboardPage() {
   return (
@@ -36,7 +37,7 @@ export default function DashboardPage() {
             <CardDescription>A feed of recent system events and actions.</CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-muted-foreground">Recent activity feed coming soon.</p>
+            <RecentActivity />
           </CardContent>
         </Card>
       </div>

@@ -139,44 +139,6 @@ export default function PensionerDetailPage({
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Landmark />
-                Banking Information
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="grid grid-cols-2 gap-4 text-sm">
-              {banking && banking.VCPTE ? (
-                <>
-                  <div>
-                    <p className="font-medium">Account Holder</p>
-                    <p className="text-muted-foreground">
-                      {banking.VNOM1} {banking.VNOM2}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="font-medium">IBAN</p>
-                    <p className="text-muted-foreground break-all">{banking.VCPTE}</p>
-                  </div>
-                  <div className="col-span-2">
-                    <p className="font-medium">Bank Address</p>
-                    <p className="text-muted-foreground">
-                      {banking.VADR1}, {banking.VADR2}, {banking.VADR3},{" "}
-                      {banking.VVILL}, {banking.VPAYS}
-                    </p>
-                  </div>
-                </>
-              ) : (
-                <p className="text-muted-foreground">
-                  No banking information available. Payment by check.
-                </p>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="space-y-6">
            <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -184,7 +146,7 @@ export default function PensionerDetailPage({
                 Pension Details
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-2 text-sm">
+            <CardContent className="grid grid-cols-2 gap-4 text-sm">
                 <div>
                     <p className="font-medium">Pension Code</p>
                     <p className="text-muted-foreground">{pensioner.CODPEN}</p>
@@ -205,6 +167,44 @@ export default function PensionerDetailPage({
                     <p className="font-medium">Payment Method</p>
                     <p className="text-muted-foreground">{pensioner.MODREG}</p>
                 </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Landmark />
+                Banking Information
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4 text-sm">
+              {banking && banking.VCPTE ? (
+                <>
+                  <div>
+                    <p className="font-medium">Account Holder</p>
+                    <p className="text-muted-foreground">
+                      {banking.VNOM1} {banking.VNOM2}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="font-medium">IBAN</p>
+                    <p className="text-muted-foreground font-mono text-xs break-all">{banking.VCPTE}</p>
+                  </div>
+                  <div>
+                    <p className="font-medium">Bank Address</p>
+                    <p className="text-muted-foreground">
+                      {banking.VADR1}, {banking.VADR2}, {banking.VADR3},{" "}
+                      {banking.VVILL}, {banking.VPAYS}
+                    </p>
+                  </div>
+                </>
+              ) : (
+                <p className="text-muted-foreground">
+                  No banking information available. Payment by check.
+                </p>
+              )}
             </CardContent>
           </Card>
           
@@ -258,27 +258,35 @@ export default function PensionerDetailPage({
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {operations.map((op, index) => {
-                  const type = op.FCDMVT === "C" ? "Crédit" : "Débit";
-                  return (
-                    <TableRow key={index}>
-                      <TableCell>
-                        {op.FJJREG}/{op.FMMREG}/{op.FAAREG}
+                {operations.length > 0 ? (
+                  operations.map((op, index) => {
+                    const type = op.FCDMVT === "C" ? "Crédit" : "Débit";
+                    return (
+                      <TableRow key={index}>
+                        <TableCell>
+                          {op.FJJREG}/{op.FMMREG}/{op.FAAREG}
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant={getOperationTypeVariant(type)}>{type}</Badge>
+                        </TableCell>
+                        <TableCell className="font-medium">
+                          {op.FMTREG.toLocaleString("fr-FR", {
+                            style: "currency",
+                            currency: "EUR",
+                          })}
+                        </TableCell>
+                        <TableCell>{op.FMDREG}</TableCell>
+                        <TableCell>{op.FCHQBD}</TableCell>
+                      </TableRow>
+                    );
+                  })
+                ) : (
+                   <TableRow>
+                      <TableCell colSpan={5} className="h-24 text-center">
+                        No operations found.
                       </TableCell>
-                      <TableCell>
-                        <Badge variant={getOperationTypeVariant(type)}>{type}</Badge>
-                      </TableCell>
-                      <TableCell className="font-medium">
-                        {op.FMTREG.toLocaleString("fr-FR", {
-                          style: "currency",
-                          currency: "EUR",
-                        })}
-                      </TableCell>
-                      <TableCell>{op.FMDREG}</TableCell>
-                      <TableCell>{op.FCHQBD}</TableCell>
                     </TableRow>
-                  );
-                })}
+                )}
               </TableBody>
             </Table>
           </div>

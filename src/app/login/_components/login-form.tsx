@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import Link from "next/link"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
@@ -80,7 +81,12 @@ export function LoginForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+                <div className="flex items-center justify-between">
+                    <FormLabel>Password</FormLabel>
+                    <Link href="#" className="text-xs text-primary/80 hover:underline">
+                        Forgot password?
+                    </Link>
+                </div>
               <FormControl>
                 <Input type="password" placeholder="admin123" {...field} />
               </FormControl>

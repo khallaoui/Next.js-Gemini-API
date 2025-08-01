@@ -22,7 +22,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Search } from "lucide-react";
 
 export default function PensionersPage() {
   const [pensioners, setPensioners] = React.useState<Pensioner[]>(pensionersData);
@@ -80,13 +81,20 @@ export default function PensionersPage() {
       </div>
 
       <Card>
-        <CardContent className="p-4 flex flex-col md:flex-row gap-4">
-          <Input
-            placeholder="Search by name, matricule, or dossier..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="max-w-sm"
-          />
+        <CardHeader>
+            <CardTitle>Filters</CardTitle>
+            <CardDescription>Refine the list of pensioners using the filters below.</CardDescription>
+        </CardHeader>
+        <CardContent className="flex flex-col md:flex-row gap-4">
+           <div className="relative flex-1">
+             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search by name, matricule, or dossier..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10"
+            />
+          </div>
           <div className="grid grid-cols-2 gap-4 md:flex">
              <Select value={selectedCity} onValueChange={setSelectedCity}>
               <SelectTrigger className="w-full md:w-[180px]">
