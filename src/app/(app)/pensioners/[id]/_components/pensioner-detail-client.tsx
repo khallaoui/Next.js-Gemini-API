@@ -50,11 +50,11 @@ export default function PensionerDetailClient({ id }: { id: string }) {
 
   const operations = operationsData.filter(
     (o) => o.FNDP === parseInt(id)
-  ) as Operation[];
+  ) as any[]; // Use any to access extra fields from json
 
   const banking = bankingData.find(
     (b) => b.ALLOC === parseInt(id)
-  ) as Banking | undefined;
+  ) as any | undefined; // Use any to access extra fields from json
 
 
   React.useEffect(() => {
@@ -121,7 +121,7 @@ export default function PensionerDetailClient({ id }: { id: string }) {
       <div className="flex items-start justify-between">
         <div>
             <h1 className="font-headline text-3xl font-bold">
-              {pensioner.personalInfo.lastName} {pensioner.personalInfo.firstName}
+              {pensioner.personalInfo.firstName} {pensioner.personalInfo.lastName}
             </h1>
             <p className="text-muted-foreground mt-1">Dossier No. {pensioner.SCPTE}</p>
         </div>
@@ -221,22 +221,22 @@ export default function PensionerDetailClient({ id }: { id: string }) {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 text-sm">
-              {banking && banking.accountNumber ? (
+              {banking && banking.VCPTE ? (
                 <>
                   <div>
                     <p className="font-medium">Account Holder</p>
                     <p className="text-muted-foreground">
-                      {banking.accountHolder}
+                      {banking.VNOM1}
                     </p>
                   </div>
                   <div>
                     <p className="font-medium">IBAN</p>
-                    <p className="text-muted-foreground font-mono text-xs break-all">{banking.accountNumber}</p>
+                    <p className="text-muted-foreground font-mono text-xs break-all">{banking.VCPTE}</p>
                   </div>
                   <div>
                     <p className="font-medium">Bank Address</p>
                     <p className="text-muted-foreground">
-                      {banking.bankAddress}
+                      {banking.VADR1}
                     </p>
                   </div>
                 </>
@@ -303,23 +303,24 @@ export default function PensionerDetailClient({ id }: { id: string }) {
               <TableBody>
                 {operations.length > 0 ? (
                   operations.map((op, index) => {
-                    const type = op.type === "C" ? "Crédit" : "Débit";
+                    const type = op.FCDMVT === "C" ? "Crédit" : "Débit";
+                    const date = new Date(op.FAAREG, op.FMMREG - 1, op.FJJREG);
                     return (
                       <TableRow key={index}>
                         <TableCell>
-                          {format(new Date(op.date), "PPP")}
+                          {format(date, "PPP")}
                         </TableCell>
                         <TableCell>
                           <Badge variant={getOperationTypeVariant(type)}>{type}</Badge>
                         </TableCell>
                         <TableCell className="font-medium">
-                          {op.amount.toLocaleString("fr-FR", {
+                          {op.FMTREG.toLocaleString("fr-FR", {
                             style: "currency",
                             currency: "EUR",
                           })}
                         </TableCell>
-                        <TableCell>{op.paymentMethod}</TableCell>
-                        <TableCell className="font-mono text-xs">{op.reference || "N/A"}</TableCell>
+                        <TableCell>{op.FMDREG}</TableCell>
+                        <TableCell className="font-mono text-xs">{op.FCHQBD || "N/A"}</TableCell>
                       </TableRow>
                     );
                   })
