@@ -1,6 +1,8 @@
+
 "use client";
 
 import * as React from "react";
+import { DateRange } from "react-day-picker";
 import {
   Card,
   CardContent,
@@ -21,9 +23,14 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { analyzePensionData } from "@/ai/flows/analyze-pension-data";
-import { Loader2, Sparkles, FileText, BarChartBig, BrainCircuit } from "lucide-react";
+import { Loader2, Sparkles, FileText, BarChartBig, BrainCircuit, Calendar as CalendarIcon, Filter } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import pensionersData from "@/data/pensioners.json";
+import operationsData from "@/data/operations.json";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { format } from "date-fns";
+import { fr } from 'date-fns/locale';
 
 const sampleData = JSON.stringify(pensionersData.slice(0, 5), null, 2);
 
@@ -34,6 +41,38 @@ export default function AnalysisPage() {
   const [reportFormat, setReportFormat] = React.useState("text");
   const [result, setResult] = React.useState<{ report: string; summary: string } | null>(null);
   const [isLoading, setIsLoading] = React.useState(false);
+  const [dateRange, setDateRange] = React.useState<DateRange | undefined>();
+
+  const handleApplyDateFilter = () => {
+    if (!dateRange?.from || !dateRange?.to) {
+      setPensionData(JSON.stringify(pensionersData, null, 2));
+      toast({
+        title: "Filtre réinitialisé",
+        description: "Affichage de toutes les données des pensionnaires.",
+      });
+      return;
+    }
+
+    const filteredOperations = operationsData.filter(op => {
+        const opDate = new Date(op.FAAREG, op.FMMREG - 1, op.FJJREG);
+        return opDate >= dateRange.from! && opDate <= dateRange.to!;
+    });
+    
+    const pensionerIdsWithOpsInDateRange = new Set(filteredOperations.map(op => op.FNDP));
+
+    const filteredPensioners = pensionersData.filter(p => pensionerIdsWithOpsInDateRange.has(p.SCPTE));
+    
+    const dataToAnalyze = filteredPensioners.map(p => ({
+        ...p,
+        operations: filteredOperations.filter(op => op.FNDP === p.SCPTE)
+    }));
+
+    setPensionData(JSON.stringify(dataToAnalyze, null, 2));
+    toast({
+        title: "Filtre appliqué",
+        description: `Analyse des données pour ${dataToAnalyze.length} pensionnaires avec des opérations entre le ${format(dateRange.from, "PPP", { locale: fr })} et le ${format(dateRange.to, "PPP", { locale: fr })}.`,
+      });
+  };
 
   const handleAnalyze = async () => {
     setIsLoading(true);
@@ -72,12 +111,63 @@ export default function AnalysisPage() {
           Utilisez l'IA pour analyser les données des pensions, identifier les tendances et projeter les engagements futurs.
         </p>
       </header>
+
+      <Card>
+        <CardHeader>
+            <CardTitle>Recherche Avancée par Période</CardTitle>
+            <CardDescription>
+                Filtrez les opérations par date pour une analyse plus ciblée. Les données correspondantes seront chargées ci-dessous.
+            </CardDescription>
+        </CardHeader>
+        <CardContent className="flex items-end gap-4">
+            <div className="grid gap-2">
+                <Label htmlFor="date">Période des opérations</Label>
+                 <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        id="date"
+                        variant={"outline"}
+                        className="w-[300px] justify-start text-left font-normal"
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {dateRange?.from ? (
+                          dateRange.to ? (
+                            <>
+                              {format(dateRange.from, "LLL dd, y", { locale: fr })} -{" "}
+                              {format(dateRange.to, "LLL dd, y", { locale: fr })}
+                            </>
+                          ) : (
+                            format(dateRange.from, "LLL dd, y", { locale: fr })
+                          )
+                        ) : (
+                          <span>Choisissez une période</span>
+                        )}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        initialFocus
+                        mode="range"
+                        defaultMonth={dateRange?.from}
+                        selected={dateRange}
+                        onSelect={setDateRange}
+                        numberOfMonths={2}
+                        locale={fr}
+                      />
+                    </PopoverContent>
+                  </Popover>
+            </div>
+             <Button onClick={handleApplyDateFilter}><Filter /> Appliquer le Filtre</Button>
+        </CardContent>
+      </Card>
+
+
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader>
             <CardTitle>Configuration de l'Analyse</CardTitle>
             <CardDescription>
-              Saisissez vos données et sélectionnez les paramètres d'analyse.
+              Saisissez vos données (ou générez-les avec la recherche avancée) et sélectionnez les paramètres.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -85,7 +175,7 @@ export default function AnalysisPage() {
               <Label htmlFor="pension-data">Données des Pensions (format JSON)</Label>
               <Textarea
                 id="pension-data"
-                placeholder="Collez vos données JSON ici"
+                placeholder="Collez vos données JSON ici ou utilisez la recherche avancée"
                 value={pensionData}
                 onChange={(e) => setPensionData(e.target.value)}
                 className="h-64 font-code text-xs"
@@ -124,7 +214,7 @@ export default function AnalysisPage() {
             </div>
           </CardContent>
           <CardFooter>
-            <Button onClick={handleAnalyze} disabled={isLoading}>
+            <Button onClick={handleAnalyze} disabled={isLoading || !pensionData}>
               {isLoading ? <Loader2 className="animate-spin" /> : <Sparkles />}
               Analyser les Données
             </Button>
@@ -185,3 +275,5 @@ export default function AnalysisPage() {
     </div>
   );
 }
+
+    
