@@ -8,12 +8,16 @@ import {
 import { StatsCards } from "@/components/dashboard/stats-cards"
 import { MonthlyPaymentsChart } from "@/components/dashboard/monthly-payments-chart"
 import { RecentActivity } from "@/components/dashboard/recent-activity"
+import { Home } from "lucide-react"
 
 export default function DashboardPage() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col">
-        <h1 className="text-3xl font-bold font-headline">Dashboard</h1>
+        <h1 className="text-3xl font-bold font-headline flex items-center gap-2">
+          <Home className="h-8 w-8" />
+          Dashboard
+        </h1>
         <p className="text-muted-foreground">
           An overview of pensioner data and activities.
         </p>

@@ -4,6 +4,9 @@ import operationsData from "@/data/operations.json";
 import pensionersData from "@/data/pensioners.json";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
+import { Button } from "../ui/button";
+import { ArrowRight } from "lucide-react";
 
 export function RecentActivity() {
   // Sort operations by date in descending order and take the first 5
@@ -38,7 +41,9 @@ export function RecentActivity() {
             </Avatar>
             <div className="grid gap-1 text-sm">
                 <p className="font-medium leading-none">
-                    {op.FCDMVT === "C" ? "Credit" : "Debit"} to {getPensionerName(op.FNDP)}
+                    <Link href={`/pensioners/${op.FNDP}`} className="hover:underline">
+                        {op.FCDMVT === "C" ? "Credit" : "Debit"} to {getPensionerName(op.FNDP)}
+                    </Link>
                 </p>
                 <p className="text-muted-foreground">
                     {op.FMTREG.toLocaleString("fr-FR", { style: "currency", currency: "EUR" })} via {op.FMDREG}
@@ -54,6 +59,16 @@ export function RecentActivity() {
       ) : (
         <p className="text-sm text-muted-foreground">No recent activity to display.</p>
       )}
+       <Button
+        variant="outline"
+        className="w-full"
+        asChild
+      >
+        <Link href="/statistics">
+            View All Reports
+            <ArrowRight className="ml-2 h-4 w-4" />
+        </Link>
+      </Button>
     </div>
   );
 }

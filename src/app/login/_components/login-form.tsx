@@ -62,7 +62,7 @@ export function LoginForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="mt-8 space-y-4">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <FormField
           control={form.control}
           name="username"
@@ -83,7 +83,7 @@ export function LoginForm() {
             <FormItem>
                 <div className="flex items-center justify-between">
                     <FormLabel>Password</FormLabel>
-                    <Link href="#" className="text-xs text-primary/80 hover:underline">
+                    <Link href="#" className="text-xs text-primary/90 hover:underline">
                         Forgot password?
                     </Link>
                 </div>
@@ -95,7 +95,7 @@ export function LoginForm() {
           )}
         />
         <Button type="submit" className="w-full" disabled={isLoading}>
-          {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          {isLoading && <Loader2 className="animate-spin" />}
           Log In
         </Button>
       </form>

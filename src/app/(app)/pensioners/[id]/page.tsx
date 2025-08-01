@@ -27,7 +27,9 @@ import {
   FileText,
   Loader2,
   Sparkles,
+  ArrowLeft
 } from "lucide-react";
+import Link from "next/link";
 
 import { type Pensioner, type Operation, type Banking } from "@/lib/types";
 import pensionersData from "@/data/pensioners.json";
@@ -88,11 +90,19 @@ export default function PensionerDetailPage({
 
   return (
     <div className="flex flex-col gap-6">
-      <div>
-        <h1 className="font-headline text-3xl font-bold">
-          {pensioner.NOM1} {pensioner.NOM2}
-        </h1>
-        <p className="text-muted-foreground">Dossier No. {pensioner.SCPTE}</p>
+      <div className="flex items-center justify-between">
+        <div>
+            <h1 className="font-headline text-3xl font-bold">
+              {pensioner.NOM1} {pensioner.NOM2}
+            </h1>
+            <p className="text-muted-foreground">Dossier No. {pensioner.SCPTE}</p>
+        </div>
+        <Button asChild variant="outline">
+            <Link href="/pensioners">
+                <ArrowLeft />
+                Back to List
+            </Link>
+        </Button>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
@@ -116,7 +126,7 @@ export default function PensionerDetailPage({
               <div>
                 <p className="font-medium">Date of Birth</p>
                 <p className="text-muted-foreground">
-                  {pensioner.JJNSP}/{pensioner.MMNSP}/{pensioner.AANSP}
+                  {new Date(pensioner.AANSP, pensioner.MMNSP - 1, pensioner.JJNSP).toLocaleDateString()}
                 </p>
               </div>
               <div>
@@ -202,7 +212,7 @@ export default function PensionerDetailPage({
                 </>
               ) : (
                 <p className="text-muted-foreground">
-                  No banking information available. Payment by check.
+                  No banking information available.
                 </p>
               )}
             </CardContent>
@@ -216,7 +226,7 @@ export default function PensionerDetailPage({
                     AI Summary
                 </div>
                 <Button onClick={handleGenerateSummary} disabled={isLoadingSummary} size="sm">
-                  {isLoadingSummary ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'Generate'}
+                  {isLoadingSummary ? <Loader2 className="animate-spin" /> : 'Generate'}
                 </Button>
               </CardTitle>
               <CardDescription>
@@ -231,7 +241,7 @@ export default function PensionerDetailPage({
                     <Skeleton className="h-4 w-3/4" />
                 </div>
               )}
-              {summary && <p className="text-sm text-foreground/80">{summary}</p>}
+              {summary && <p className="text-sm text-foreground/80 whitespace-pre-wrap">{summary}</p>}
               {!summary && !isLoadingSummary && <p className="text-sm text-muted-foreground">Click 'Generate' to create a summary.</p>}
             </CardContent>
           </Card>
@@ -244,6 +254,9 @@ export default function PensionerDetailPage({
             <History />
             Operations History
           </CardTitle>
+           <CardDescription>
+            A log of all financial transactions for this pensioner.
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="rounded-lg border">
@@ -264,7 +277,7 @@ export default function PensionerDetailPage({
                     return (
                       <TableRow key={index}>
                         <TableCell>
-                          {op.FJJREG}/{op.FMMREG}/{op.FAAREG}
+                          {new Date(op.FAAREG, op.FMMREG - 1, op.FJJREG).toLocaleDateString()}
                         </TableCell>
                         <TableCell>
                           <Badge variant={getOperationTypeVariant(type)}>{type}</Badge>
@@ -276,7 +289,7 @@ export default function PensionerDetailPage({
                           })}
                         </TableCell>
                         <TableCell>{op.FMDREG}</TableCell>
-                        <TableCell>{op.FCHQBD}</TableCell>
+                        <TableCell>{op.FCHQBD || "N/A"}</TableCell>
                       </TableRow>
                     );
                   })

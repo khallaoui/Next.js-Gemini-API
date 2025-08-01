@@ -5,7 +5,7 @@
  * notable changes in payment history, and any potential discrepancies using AI.
  *
  * @interface GenerateRecordSummaryInput - The input type for the generateRecordSummary function.
- * @interface GenerateRecordSummaryOutput - The output type for the generateRecordSummary function.
+ * @interface GenerateRecordSummaryOutput - The output type for the generateRecordsummary function.
  * @function generateRecordSummary - A function that generates a summary of a pensioner's record.
  */
 
@@ -13,13 +13,13 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const GenerateRecordSummaryInputSchema = z.object({
-  pensionerRecord: z.string().describe('The complete record of the pensioner.'),
+  pensionerRecord: z.string().describe("The pensioner's complete record in JSON format, including personal info, operations, and banking details."),
 });
 
 export type GenerateRecordSummaryInput = z.infer<typeof GenerateRecordSummaryInputSchema>;
 
 const GenerateRecordSummaryOutputSchema = z.object({
-  summary: z.string().describe('A summarized version of the pensioner record.'),
+  summary: z.string().describe('A concise, easy-to-understand summary of the pensioner record.'),
 });
 
 export type GenerateRecordSummaryOutput = z.infer<typeof GenerateRecordSummaryOutputSchema>;
@@ -32,13 +32,19 @@ const generateRecordSummaryPrompt = ai.definePrompt({
   name: 'generateRecordSummaryPrompt',
   input: {schema: GenerateRecordSummaryInputSchema},
   output: {schema: GenerateRecordSummaryOutputSchema},
-  prompt: `You are an AI assistant that summarizes pensioner records.
+  prompt: `You are an AI assistant that summarizes pensioner records for a case manager.
 
   Given the following pensioner record:
+  \`\`\`json
   {{pensionerRecord}}
+  \`\`\`
 
-  Generate a concise summary highlighting key information such as total benefits paid, notable changes in payment history, and any potential discrepancies.
-  The summary should be easy to understand and should quickly provide insights into the pensioner's financial status.`,
+  Generate a concise summary in bullet points. Highlight key information such as:
+  - Total benefits paid vs. calculated net.
+  - Notable changes or trends in payment history (e.g., recent debits).
+  - Any potential discrepancies or points of interest (e.g., missing banking info for 'Virement' payment method).
+  
+  The summary should be easy to read and quickly provide actionable insights into the pensioner's financial status.`,
 });
 
 const generateRecordSummaryFlow = ai.defineFlow(

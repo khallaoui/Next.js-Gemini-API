@@ -21,7 +21,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { analyzePensionData } from "@/ai/flows/analyze-pension-data";
-import { Loader2, Sparkles, FileText, BarChartBig } from "lucide-react";
+import { Loader2, Sparkles, FileText, BarChartBig, BrainCircuit } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import pensionersData from "@/data/pensioners.json";
 
@@ -63,12 +63,17 @@ export default function AnalysisPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div>
-        <h1 className="font-headline text-3xl font-bold">Data Analysis Tool</h1>
-        <p className="text-muted-foreground">
-          Use AI to analyze pension data, identify trends, and project future
-          liabilities.
-        </p>
+      <div className="flex items-start justify-between">
+        <div>
+            <h1 className="font-headline text-3xl font-bold flex items-center gap-2">
+                <BrainCircuit className="h-8 w-8 text-primary" />
+                Data Analysis Tool
+            </h1>
+            <p className="text-muted-foreground">
+              Use AI to analyze pension data, identify trends, and project future
+              liabilities.
+            </p>
+        </div>
       </div>
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>
@@ -123,7 +128,7 @@ export default function AnalysisPage() {
           </CardContent>
           <CardFooter>
             <Button onClick={handleAnalyze} disabled={isLoading}>
-              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {isLoading ? <Loader2 className="animate-spin" /> : <Sparkles />}
               Analyze Data
             </Button>
           </CardFooter>
@@ -163,7 +168,7 @@ export default function AnalysisPage() {
               <>
                 <div>
                   <h3 className="flex items-center gap-2 text-lg font-semibold mb-2 font-headline"><Sparkles className="h-5 w-5 text-primary" />Summary</h3>
-                  <p className="text-sm text-muted-foreground">{result.summary}</p>
+                  <p className="text-sm text-muted-foreground whitespace-pre-wrap">{result.summary}</p>
                 </div>
                 <div>
                   <h3 className="flex items-center gap-2 text-lg font-semibold mb-2 font-headline"><FileText className="h-5 w-5 text-primary" />Report</h3>
@@ -173,7 +178,7 @@ export default function AnalysisPage() {
                 </div>
               </>
             ) : !isLoading && (
-              <div className="flex items-center justify-center h-48">
+              <div className="flex items-center justify-center h-48 rounded-lg border border-dashed">
                 <p className="text-muted-foreground">Results will be shown here after analysis.</p>
               </div>
             )}

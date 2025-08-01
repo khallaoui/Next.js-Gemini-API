@@ -1,3 +1,7 @@
+export type StatutAdherent = 'ACTIF' | 'INACTIF' | 'EN_ATTENTE';
+export type StatutRemboursement = 'EN_COURS' | 'COMPLETE' | 'REJETE';
+export type TypePrestation = 'RETRAITE' | 'ALLOCATION' | 'REMBOURSEMENT';
+
 export interface Pensioner {
   SCPTE: number;
   MATRIC: number;
@@ -20,6 +24,7 @@ export interface Pensioner {
   NETCAL: number;
   NETRGT: number;
   MODREG: string;
+  statut?: StatutAdherent;
 }
 
 export interface Operation {
@@ -35,6 +40,7 @@ export interface Operation {
   FAAREG: number;
   FMDREG: string;
   FCHQBD: string;
+  type?: TypePrestation;
 }
 
 export interface Banking {

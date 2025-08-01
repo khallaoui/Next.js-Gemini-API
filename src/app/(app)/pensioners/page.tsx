@@ -23,7 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Search } from "lucide-react";
+import { Search, Users } from "lucide-react";
 
 export default function PensionersPage() {
   const [pensioners, setPensioners] = React.useState<Pensioner[]>(pensionersData);
@@ -74,7 +74,10 @@ export default function PensionersPage() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col">
-        <h1 className="font-headline text-3xl font-bold">Pensioner Records</h1>
+        <h1 className="font-headline text-3xl font-bold flex items-center gap-2">
+            <Users className="h-8 w-8" />
+            Pensioner Records
+        </h1>
         <p className="text-muted-foreground">
           Search, filter, and manage pensioner records.
         </p>
@@ -124,57 +127,61 @@ export default function PensionersPage() {
         </CardContent>
       </Card>
 
-      <div className="rounded-lg border">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Dossier No.</TableHead>
-              <TableHead>Matricule</TableHead>
-              <TableHead>Full Name</TableHead>
-              <TableHead>Net Paid</TableHead>
-              <TableHead>City</TableHead>
-              <TableHead>Payment Method</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {pensioners.length > 0 ? (
-              pensioners.map((pensioner) => (
-                <TableRow key={pensioner.SCPTE}>
-                  <TableCell className="font-medium">{pensioner.SCPTE}</TableCell>
-                  <TableCell>{pensioner.MATRIC}</TableCell>
-                  <TableCell>
-                    {pensioner.NOM1} {pensioner.NOM2}
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={getStatusVariant(pensioner.NETRGT)}>
-                      {pensioner.NETRGT.toLocaleString("fr-FR", {
-                        style: "currency",
-                        currency: "EUR",
-                      })}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>{pensioner.VILLE}</TableCell>
-                  <TableCell>{pensioner.MODREG}</TableCell>
-                  <TableCell className="text-right">
-                    <Button asChild variant="ghost" size="sm">
-                      <Link href={`/pensioners/${pensioner.SCPTE}`}>
-                        View Details
-                      </Link>
-                    </Button>
-                  </TableCell>
+      <Card>
+        <CardContent className="p-0">
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Dossier No.</TableHead>
+                  <TableHead>Matricule</TableHead>
+                  <TableHead>Full Name</TableHead>
+                  <TableHead>Net Paid</TableHead>
+                  <TableHead>City</TableHead>
+                  <TableHead>Payment Method</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={7} className="h-24 text-center">
-                  No results found.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
+              </TableHeader>
+              <TableBody>
+                {pensioners.length > 0 ? (
+                  pensioners.map((pensioner) => (
+                    <TableRow key={pensioner.SCPTE}>
+                      <TableCell className="font-medium">{pensioner.SCPTE}</TableCell>
+                      <TableCell>{pensioner.MATRIC}</TableCell>
+                      <TableCell>
+                        {pensioner.NOM1} {pensioner.NOM2}
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={getStatusVariant(pensioner.NETRGT)}>
+                          {pensioner.NETRGT.toLocaleString("fr-FR", {
+                            style: "currency",
+                            currency: "EUR",
+                          })}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>{pensioner.VILLE}</TableCell>
+                      <TableCell>{pensioner.MODREG}</TableCell>
+                      <TableCell className="text-right">
+                        <Button asChild variant="ghost" size="sm">
+                          <Link href={`/pensioners/${pensioner.SCPTE}`}>
+                            View Details
+                          </Link>
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={7} className="h-24 text-center">
+                      No results found.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

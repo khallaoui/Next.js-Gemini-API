@@ -17,7 +17,7 @@ const AnalyzePensionDataInputSchema = z.object({
   pensionData: z
     .string()
     .describe(
-      'Pension data in JSON format.  It should include historical records of pensioner demographics, contribution history, and payout information.'
+      'Pension data in JSON format. It should include historical records of pensioner demographics, contribution history, and payout information.'
     ),
   analysisType: z
     .string()
@@ -33,8 +33,8 @@ const AnalyzePensionDataInputSchema = z.object({
 export type AnalyzePensionDataInput = z.infer<typeof AnalyzePensionDataInputSchema>;
 
 const AnalyzePensionDataOutputSchema = z.object({
-  report: z.string().describe('The analysis report in the specified format.'),
-  summary: z.string().describe('A brief summary of the analysis results.'),
+  report: z.string().describe('The analysis report in the specified format. This should be a detailed, structured output.'),
+  summary: z.string().describe('A brief, insightful summary of the key findings from the analysis.'),
 });
 export type AnalyzePensionDataOutput = z.infer<typeof AnalyzePensionDataOutputSchema>;
 
@@ -46,17 +46,21 @@ const analyzePensionDataPrompt = ai.definePrompt({
   name: 'analyzePensionDataPrompt',
   input: {schema: AnalyzePensionDataInputSchema},
   output: {schema: AnalyzePensionDataOutputSchema},
-  prompt: `You are an expert pension data analyst. You are given pension data, the type of analysis to perform, and the desired report format.
+  prompt: `You are an expert pension data analyst. Your task is to analyze the provided pension data based on the requested analysis type and generate a report in the specified format.
 
-You will analyze the pension data and generate a report in the specified format. You will also provide a brief summary of the analysis results.
+You must provide a detailed, well-structured report and a concise summary of your findings.
 
-Pension Data: {{{pensionData}}}
-Analysis Type: {{{analysisType}}}
-Report Format: {{{reportFormat}}}
+**Pension Data:**
+\`\`\`json
+{{{pensionData}}}
+\`\`\`
 
-Report:
-Summary:`, // Ensure Handlebars syntax is used correctly
+**Analysis Type:** {{{analysisType}}}
+**Report Format:** {{{reportFormat}}}
+
+Begin the analysis now.`,
 });
+
 
 const analyzePensionDataFlow = ai.defineFlow(
   {
