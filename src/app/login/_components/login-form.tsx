@@ -46,14 +46,14 @@ export function LoginForm() {
         localStorage.setItem("cimr-insights-auth", "true")
         toast({
           title: "Login Successful",
-          description: "Welcome back!",
+          description: "Welcome back! Redirecting you to the dashboard.",
         })
         router.push("/")
       } else {
         toast({
           variant: "destructive",
           title: "Login Failed",
-          description: "Invalid username or password.",
+          description: "Invalid username or password. Please try again.",
         })
         setIsLoading(false)
       }

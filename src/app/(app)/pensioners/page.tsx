@@ -23,7 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Search, Users } from "lucide-react";
+import { Search, Users, Eye } from "lucide-react";
 
 export default function PensionersPage() {
   const [pensioners, setPensioners] = React.useState<Pensioner[]>(pensionersData);
@@ -32,12 +32,12 @@ export default function PensionersPage() {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = React.useState("all");
 
   const cities = React.useMemo(() => {
-    const allCities = pensionersData.map((p) => p.VILLE);
+    const allCities = pensionersData.map((p) => p.personalInfo.ville);
     return ["all", ...Array.from(new Set(allCities))];
   }, []);
 
   const paymentMethods = React.useMemo(() => {
-    const allMethods = pensionersData.map((p) => p.MODREG);
+    const allMethods = pensionersData.map((p) => p.paymentMethod);
     return ["all", ...Array.from(new Set(allMethods))];
   }, []);
 
@@ -45,21 +45,22 @@ export default function PensionersPage() {
     let filtered = pensionersData;
 
     if (searchTerm) {
+      const lowercasedTerm = searchTerm.toLowerCase();
       filtered = filtered.filter(
         (pensioner) =>
-          pensioner.NOM1.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          pensioner.NOM2.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          String(pensioner.MATRIC).includes(searchTerm) ||
-          String(pensioner.SCPTE).includes(searchTerm)
+          pensioner.personalInfo.firstName.toLowerCase().includes(lowercasedTerm) ||
+          pensioner.personalInfo.lastName.toLowerCase().includes(lowercasedTerm) ||
+          String(pensioner.matricule).includes(lowercasedTerm) ||
+          String(pensioner.SCPTE).includes(lowercasedTerm)
       );
     }
 
     if (selectedCity !== "all") {
-      filtered = filtered.filter((p) => p.VILLE === selectedCity);
+      filtered = filtered.filter((p) => p.personalInfo.ville === selectedCity);
     }
 
     if (selectedPaymentMethod !== "all") {
-      filtered = filtered.filter((p) => p.MODREG === selectedPaymentMethod);
+      filtered = filtered.filter((p) => p.paymentMethod === selectedPaymentMethod);
     }
 
     setPensioners(filtered);
@@ -73,15 +74,15 @@ export default function PensionersPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-col">
-        <h1 className="font-headline text-3xl font-bold flex items-center gap-2">
+      <header>
+        <h1 className="font-headline text-3xl font-bold flex items-center gap-3">
             <Users className="h-8 w-8" />
             Pensioner Records
         </h1>
-        <p className="text-muted-foreground">
+        <p className="text-muted-foreground mt-1">
           Search, filter, and manage pensioner records.
         </p>
-      </div>
+      </header>
 
       <Card>
         <CardHeader>
@@ -147,23 +148,24 @@ export default function PensionersPage() {
                   pensioners.map((pensioner) => (
                     <TableRow key={pensioner.SCPTE}>
                       <TableCell className="font-medium">{pensioner.SCPTE}</TableCell>
-                      <TableCell>{pensioner.MATRIC}</TableCell>
+                      <TableCell>{pensioner.matricule}</TableCell>
                       <TableCell>
-                        {pensioner.NOM1} {pensioner.NOM2}
+                        {pensioner.personalInfo.firstName} {pensioner.personalInfo.lastName}
                       </TableCell>
                       <TableCell>
-                        <Badge variant={getStatusVariant(pensioner.NETRGT)}>
-                          {pensioner.NETRGT.toLocaleString("fr-FR", {
+                        <Badge variant={getStatusVariant(pensioner.netPaid)} className="font-mono">
+                          {pensioner.netPaid.toLocaleString("fr-FR", {
                             style: "currency",
                             currency: "EUR",
                           })}
                         </Badge>
                       </TableCell>
-                      <TableCell>{pensioner.VILLE}</TableCell>
-                      <TableCell>{pensioner.MODREG}</TableCell>
+                      <TableCell>{pensioner.personalInfo.ville}</TableCell>
+                      <TableCell>{pensioner.paymentMethod}</TableCell>
                       <TableCell className="text-right">
                         <Button asChild variant="ghost" size="sm">
                           <Link href={`/pensioners/${pensioner.SCPTE}`}>
+                            <Eye className="mr-2" />
                             View Details
                           </Link>
                         </Button>

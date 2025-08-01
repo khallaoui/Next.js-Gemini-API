@@ -13,15 +13,15 @@ import { Home } from "lucide-react"
 export default function DashboardPage() {
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-col">
-        <h1 className="text-3xl font-bold font-headline flex items-center gap-2">
+      <header>
+        <h1 className="text-3xl font-bold font-headline flex items-center gap-3">
           <Home className="h-8 w-8" />
           Dashboard
         </h1>
-        <p className="text-muted-foreground">
+        <p className="text-muted-foreground mt-1">
           An overview of pensioner data and activities.
         </p>
-      </div>
+      </header>
 
       <StatsCards />
 

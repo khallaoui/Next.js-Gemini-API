@@ -4,13 +4,6 @@ import * as React from "react"
 import { Pie, PieChart } from "recharts"
 
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
@@ -37,7 +30,8 @@ const chartConfig = {
 export function PensionersByCityChart() {
   const chartData = React.useMemo(() => {
     const cityCounts = pensionersData.reduce((acc, p) => {
-      acc[p.VILLE] = (acc[p.VILLE] || 0) + 1
+      const city = p.personalInfo.ville;
+      acc[city] = (acc[city] || 0) + 1
       return acc
     }, {} as Record<string, number>)
 

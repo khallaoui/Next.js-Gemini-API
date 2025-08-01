@@ -19,7 +19,7 @@ const GenerateRecordSummaryInputSchema = z.object({
 export type GenerateRecordSummaryInput = z.infer<typeof GenerateRecordSummaryInputSchema>;
 
 const GenerateRecordSummaryOutputSchema = z.object({
-  summary: z.string().describe('A concise, easy-to-understand summary of the pensioner record.'),
+  summary: z.string().describe('A concise, easy-to-understand summary of the pensioner record in markdown format.'),
 });
 
 export type GenerateRecordSummaryOutput = z.infer<typeof GenerateRecordSummaryOutputSchema>;
@@ -39,12 +39,12 @@ const generateRecordSummaryPrompt = ai.definePrompt({
   {{pensionerRecord}}
   \`\`\`
 
-  Generate a concise summary in bullet points. Highlight key information such as:
+  Generate a concise summary in markdown bullet points. Highlight key information such as:
   - Total benefits paid vs. calculated net.
   - Notable changes or trends in payment history (e.g., recent debits).
   - Any potential discrepancies or points of interest (e.g., missing banking info for 'Virement' payment method).
   
-  The summary should be easy to read and quickly provide actionable insights into the pensioner's financial status.`,
+  The summary should be easy to read and quickly provide actionable insights into the pensioner's financial status. Ensure the output is valid markdown.`,
 });
 
 const generateRecordSummaryFlow = ai.defineFlow(

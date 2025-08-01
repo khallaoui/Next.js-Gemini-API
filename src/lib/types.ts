@@ -2,56 +2,42 @@ export type StatutAdherent = 'ACTIF' | 'INACTIF' | 'EN_ATTENTE';
 export type StatutRemboursement = 'EN_COURS' | 'COMPLETE' | 'REJETE';
 export type TypePrestation = 'RETRAITE' | 'ALLOCATION' | 'REMBOURSEMENT';
 
+export interface PersonalInfo {
+  lastName: string;
+  firstName: string;
+  gender: 'M' | 'F';
+  familySituation: string;
+  dateOfBirth: string; // ISO 8601 date string
+  cin: string;
+  address: string;
+  ville: string;
+}
+
 export interface Pensioner {
-  SCPTE: number;
-  MATRIC: number;
-  ADHRT: number;
-  NOM1: string;
-  NOM2: string;
-  SEXE: 'M' | 'F';
-  SITFAM: string;
-  JJNSP: number;
-  MMNSP: number;
-  AANSP: number;
-  CIN: string;
-  ADRESA: string;
-  ADRESB: string;
-  CODVIL: string;
-  VILLE: string;
-  PAYS: string;
-  CODPEN: string;
-  PTS: number;
-  NETCAL: number;
-  NETRGT: number;
-  MODREG: string;
-  statut?: StatutAdherent;
+  SCPTE: number; // Unique ID from MCRETRAI
+  matricule: string;
+  status: StatutAdherent;
+  points: number;
+  netCalculated: number;
+  netPaid: number;
+  paymentMethod: string;
+  pensionCode: string;
+  personalInfo: PersonalInfo;
 }
 
 export interface Operation {
-  FNDP: number;
-  FCDMVT: 'C' | 'D';
-  FMTCR: number;
-  FMTREG: number;
-  FJJCR: number;
-  FMMCR: number;
-  FAACR: number;
-  FJJREG: number;
-  FMMREG: number;
-  FAAREG: number;
-  FMDREG: string;
-  FCHQBD: string;
-  type?: TypePrestation;
+  FNDP: number; // Corresponds to SCPTE
+  type: 'C' | 'D'; // C for Credit, D for Debit
+  amount: number;
+  date: string; // ISO 8601 date string
+  paymentMethod: string;
+  reference: string;
 }
 
 export interface Banking {
-  ALLOC: number;
-  VMAT: number;
-  VCPTE: string;
-  VNOM1: string;
-  VNOM2: string;
-  VADR1: string;
-  VADR2: string;
-  VADR3: string;
-  VVILL: string;
-  VPAYS: string;
+  ALLOC: number; // Corresponds to SCPTE
+  matricule: number;
+  accountNumber: string;
+  accountHolder: string;
+  bankAddress: string;
 }

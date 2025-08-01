@@ -10,6 +10,7 @@ const inter = Inter({
 
 const lexend = Lexend({
   subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
   variable: '--font-headline',
 })
 

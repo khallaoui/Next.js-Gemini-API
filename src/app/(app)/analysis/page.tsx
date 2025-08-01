@@ -25,7 +25,7 @@ import { Loader2, Sparkles, FileText, BarChartBig, BrainCircuit } from "lucide-r
 import { Skeleton } from "@/components/ui/skeleton";
 import pensionersData from "@/data/pensioners.json";
 
-const sampleData = JSON.stringify(pensionersData.slice(0, 3), null, 2);
+const sampleData = JSON.stringify(pensionersData.slice(0, 5), null, 2);
 
 export default function AnalysisPage() {
   const { toast } = useToast();
@@ -63,18 +63,16 @@ export default function AnalysisPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-start justify-between">
-        <div>
-            <h1 className="font-headline text-3xl font-bold flex items-center gap-2">
-                <BrainCircuit className="h-8 w-8 text-primary" />
-                Data Analysis Tool
-            </h1>
-            <p className="text-muted-foreground">
-              Use AI to analyze pension data, identify trends, and project future
-              liabilities.
-            </p>
-        </div>
-      </div>
+      <header>
+        <h1 className="font-headline text-3xl font-bold flex items-center gap-3">
+            <BrainCircuit className="h-8 w-8 text-primary" />
+            Data Analysis Tool
+        </h1>
+        <p className="text-muted-foreground mt-1">
+          Use AI to analyze pension data, identify trends, and project future
+          liabilities.
+        </p>
+      </header>
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader>
@@ -136,7 +134,7 @@ export default function AnalysisPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-3">
                 <BarChartBig />
                 Analysis Results
             </CardTitle>
@@ -168,17 +166,17 @@ export default function AnalysisPage() {
               <>
                 <div>
                   <h3 className="flex items-center gap-2 text-lg font-semibold mb-2 font-headline"><Sparkles className="h-5 w-5 text-primary" />Summary</h3>
-                  <p className="text-sm text-muted-foreground whitespace-pre-wrap">{result.summary}</p>
+                  <div className="prose prose-sm dark:prose-invert text-muted-foreground whitespace-pre-wrap">{result.summary}</div>
                 </div>
                 <div>
                   <h3 className="flex items-center gap-2 text-lg font-semibold mb-2 font-headline"><FileText className="h-5 w-5 text-primary" />Report</h3>
-                  <pre className="text-xs bg-muted p-4 rounded-md overflow-x-auto">
+                  <pre className="text-xs bg-muted/50 p-4 rounded-md overflow-x-auto">
                     <code>{result.report}</code>
                   </pre>
                 </div>
               </>
             ) : !isLoading && (
-              <div className="flex items-center justify-center h-48 rounded-lg border border-dashed">
+              <div className="flex items-center justify-center h-full min-h-[200px] rounded-lg border border-dashed">
                 <p className="text-muted-foreground">Results will be shown here after analysis.</p>
               </div>
             )}

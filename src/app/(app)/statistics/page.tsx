@@ -15,15 +15,15 @@ import { BarChart3 } from "lucide-react";
 export default function StatisticsPage() {
   return (
     <div className="flex flex-col gap-6">
-      <div>
-        <h1 className="font-headline text-3xl font-bold flex items-center gap-2">
+      <header>
+        <h1 className="font-headline text-3xl font-bold flex items-center gap-3">
             <BarChart3 className="h-8 w-8"/>
             Statistics & Reports
         </h1>
-        <p className="text-muted-foreground">
+        <p className="text-muted-foreground mt-1">
           Key metrics and visualizations for administrators.
         </p>
-      </div>
+      </header>
       
       <StatsCards />
 

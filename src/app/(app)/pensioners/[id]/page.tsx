@@ -37,6 +37,7 @@ import operationsData from "@/data/operations.json";
 import bankingData from "@/data/banking.json";
 import { useToast } from "@/hooks/use-toast";
 import { generateRecordSummary } from "@/ai/flows/generate-record-summary";
+import { format } from "date-fns";
 
 export default function PensionerDetailPage({
   params,
@@ -90,12 +91,12 @@ export default function PensionerDetailPage({
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-start justify-between">
         <div>
             <h1 className="font-headline text-3xl font-bold">
-              {pensioner.NOM1} {pensioner.NOM2}
+              {pensioner.personalInfo.lastName} {pensioner.personalInfo.firstName}
             </h1>
-            <p className="text-muted-foreground">Dossier No. {pensioner.SCPTE}</p>
+            <p className="text-muted-foreground mt-1">Dossier No. {pensioner.SCPTE}</p>
         </div>
         <Button asChild variant="outline">
             <Link href="/pensioners">
@@ -109,7 +110,7 @@ export default function PensionerDetailPage({
         <div className="lg:col-span-2 space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-3">
                 <User />
                 Personal Information
               </CardTitle>
@@ -117,33 +118,32 @@ export default function PensionerDetailPage({
             <CardContent className="grid grid-cols-2 gap-4 text-sm">
               <div>
                 <p className="font-medium">Matricule</p>
-                <p className="text-muted-foreground">{pensioner.MATRIC}</p>
+                <p className="text-muted-foreground">{pensioner.matricule}</p>
               </div>
               <div>
                 <p className="font-medium">CIN</p>
-                <p className="text-muted-foreground">{pensioner.CIN}</p>
+                <p className="text-muted-foreground">{pensioner.personalInfo.cin}</p>
               </div>
               <div>
                 <p className="font-medium">Date of Birth</p>
                 <p className="text-muted-foreground">
-                  {new Date(pensioner.AANSP, pensioner.MMNSP - 1, pensioner.JJNSP).toLocaleDateString()}
+                  {format(new Date(pensioner.personalInfo.dateOfBirth), "PPP")}
                 </p>
               </div>
               <div>
                 <p className="font-medium">Gender</p>
                 <p className="text-muted-foreground">
-                  {pensioner.SEXE === "M" ? "Male" : "Female"}
+                  {pensioner.personalInfo.gender === "M" ? "Male" : "Female"}
                 </p>
               </div>
               <div>
                 <p className="font-medium">Family Situation</p>
-                <p className="text-muted-foreground">{pensioner.SITFAM}</p>
+                <p className="text-muted-foreground">{pensioner.personalInfo.familySituation}</p>
               </div>
               <div className="col-span-2">
                 <p className="font-medium">Address</p>
                 <p className="text-muted-foreground">
-                  {pensioner.ADRESA}, {pensioner.ADRESB} {pensioner.CODVIL}{" "}
-                  {pensioner.VILLE}, {pensioner.PAYS}
+                  {pensioner.personalInfo.address}
                 </p>
               </div>
             </CardContent>
@@ -151,7 +151,7 @@ export default function PensionerDetailPage({
 
            <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-3">
                 <FileText />
                 Pension Details
               </CardTitle>
@@ -159,23 +159,27 @@ export default function PensionerDetailPage({
             <CardContent className="grid grid-cols-2 gap-4 text-sm">
                 <div>
                     <p className="font-medium">Pension Code</p>
-                    <p className="text-muted-foreground">{pensioner.CODPEN}</p>
+                    <p className="text-muted-foreground">{pensioner.pensionCode}</p>
                 </div>
                 <div>
                     <p className="font-medium">Points</p>
-                    <p className="text-muted-foreground">{pensioner.PTS}</p>
+                    <p className="text-muted-foreground">{pensioner.points}</p>
                 </div>
                 <div>
                     <p className="font-medium">Calculated Net</p>
-                    <p className="text-muted-foreground">{pensioner.NETCAL.toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}</p>
+                    <p className="text-muted-foreground">{pensioner.netCalculated.toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}</p>
                 </div>
                  <div>
                     <p className="font-medium">Paid Net</p>
-                    <p className="text-muted-foreground">{pensioner.NETRGT.toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}</p>
+                    <p className="text-muted-foreground">{pensioner.netPaid.toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}</p>
                 </div>
                  <div>
                     <p className="font-medium">Payment Method</p>
-                    <p className="text-muted-foreground">{pensioner.MODREG}</p>
+                    <p className="text-muted-foreground">{pensioner.paymentMethod}</p>
+                </div>
+                <div>
+                    <p className="font-medium">Status</p>
+                    <p className="text-muted-foreground"><Badge>{pensioner.status}</Badge></p>
                 </div>
             </CardContent>
           </Card>
@@ -184,44 +188,43 @@ export default function PensionerDetailPage({
         <div className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-3">
                 <Landmark />
                 Banking Information
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 text-sm">
-              {banking && banking.VCPTE ? (
+              {banking && banking.accountNumber ? (
                 <>
                   <div>
                     <p className="font-medium">Account Holder</p>
                     <p className="text-muted-foreground">
-                      {banking.VNOM1} {banking.VNOM2}
+                      {banking.accountHolder}
                     </p>
                   </div>
                   <div>
                     <p className="font-medium">IBAN</p>
-                    <p className="text-muted-foreground font-mono text-xs break-all">{banking.VCPTE}</p>
+                    <p className="text-muted-foreground font-mono text-xs break-all">{banking.accountNumber}</p>
                   </div>
                   <div>
                     <p className="font-medium">Bank Address</p>
                     <p className="text-muted-foreground">
-                      {banking.VADR1}, {banking.VADR2}, {banking.VADR3},{" "}
-                      {banking.VVILL}, {banking.VPAYS}
+                      {banking.bankAddress}
                     </p>
                   </div>
                 </>
               ) : (
                 <p className="text-muted-foreground">
-                  No banking information available.
+                  No banking information available for this pensioner.
                 </p>
               )}
             </CardContent>
           </Card>
           
-          <Card className="bg-primary/5">
+          <Card className="bg-primary/5 border-primary/20">
             <CardHeader>
-              <CardTitle className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2">
+              <CardTitle className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
                     <Sparkles className="text-primary"/>
                     AI Summary
                 </div>
@@ -241,8 +244,8 @@ export default function PensionerDetailPage({
                     <Skeleton className="h-4 w-3/4" />
                 </div>
               )}
-              {summary && <p className="text-sm text-foreground/80 whitespace-pre-wrap">{summary}</p>}
-              {!summary && !isLoadingSummary && <p className="text-sm text-muted-foreground">Click 'Generate' to create a summary.</p>}
+              {summary && <div className="prose prose-sm dark:prose-invert text-foreground/90 whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: summary }} />}
+              {!summary && !isLoadingSummary && <p className="text-sm text-center text-muted-foreground py-4">Click 'Generate' to create a summary.</p>}
             </CardContent>
           </Card>
         </div>
@@ -250,7 +253,7 @@ export default function PensionerDetailPage({
       
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+          <CardTitle className="flex items-center gap-3">
             <History />
             Operations History
           </CardTitle>
@@ -273,23 +276,23 @@ export default function PensionerDetailPage({
               <TableBody>
                 {operations.length > 0 ? (
                   operations.map((op, index) => {
-                    const type = op.FCDMVT === "C" ? "Crédit" : "Débit";
+                    const type = op.type === "C" ? "Crédit" : "Débit";
                     return (
                       <TableRow key={index}>
                         <TableCell>
-                          {new Date(op.FAAREG, op.FMMREG - 1, op.FJJREG).toLocaleDateString()}
+                          {format(new Date(op.date), "PPP")}
                         </TableCell>
                         <TableCell>
                           <Badge variant={getOperationTypeVariant(type)}>{type}</Badge>
                         </TableCell>
                         <TableCell className="font-medium">
-                          {op.FMTREG.toLocaleString("fr-FR", {
+                          {op.amount.toLocaleString("fr-FR", {
                             style: "currency",
                             currency: "EUR",
                           })}
                         </TableCell>
-                        <TableCell>{op.FMDREG}</TableCell>
-                        <TableCell>{op.FCHQBD || "N/A"}</TableCell>
+                        <TableCell>{op.paymentMethod}</TableCell>
+                        <TableCell className="font-mono text-xs">{op.reference || "N/A"}</TableCell>
                       </TableRow>
                     );
                   })

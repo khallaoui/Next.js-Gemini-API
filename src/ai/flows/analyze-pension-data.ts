@@ -48,7 +48,7 @@ const analyzePensionDataPrompt = ai.definePrompt({
   output: {schema: AnalyzePensionDataOutputSchema},
   prompt: `You are an expert pension data analyst. Your task is to analyze the provided pension data based on the requested analysis type and generate a report in the specified format.
 
-You must provide a detailed, well-structured report and a concise summary of your findings.
+You must provide a detailed, well-structured report and a concise, insightful summary of your findings.
 
 **Pension Data:**
 \`\`\`json
@@ -58,7 +58,7 @@ You must provide a detailed, well-structured report and a concise summary of you
 **Analysis Type:** {{{analysisType}}}
 **Report Format:** {{{reportFormat}}}
 
-Begin the analysis now.`,
+Begin the analysis now. Structure your response clearly.`,
 });
 
 

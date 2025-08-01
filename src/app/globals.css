@@ -4,26 +4,26 @@
 
 @layer base {
   :root {
-    --background: 220 20% 96%;
+    --background: 220 20% 98%;
     --foreground: 224 48% 10%;
     --card: 0 0% 100%;
     --card-foreground: 224 48% 10%;
     --popover: 0 0% 100%;
     --popover-foreground: 224 48% 10%;
-    --primary: 217 91% 60%;
+    --primary: 210 82% 38%; /* CIMR Blue: #0a4f8a */
     --primary-foreground: 0 0% 98%;
     --secondary: 220 13% 91%;
     --secondary-foreground: 224 48% 20%;
-    --muted: 220 13% 88%;
+    --muted: 220 13% 91%;
     --muted-foreground: 220 10% 45%;
-    --accent: 220 13% 91%;
+    --accent: 220 13% 94%;
     --accent-foreground: 224 48% 15%;
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 98%;
     --border: 220 13% 88%;
     --input: 220 13% 93%;
-    --ring: 217 91% 60%;
-    --chart-1: 217 91% 60%;
+    --ring: 210 82% 48%;
+    --chart-1: 210 82% 38%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
@@ -32,12 +32,12 @@
     
     --sidebar-background: 224 48% 12%;
     --sidebar-foreground: 220 13% 85%;
-    --sidebar-primary: 217 91% 65%;
+    --sidebar-primary: 210 82% 55%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 224 48% 20%;
     --sidebar-accent-foreground: 0 0% 98%;
     --sidebar-border: 224 48% 18%;
-    --sidebar-ring: 217 91% 65%;
+    --sidebar-ring: 210 82% 55%;
   }
 
   .dark {
@@ -47,7 +47,7 @@
     --card-foreground: 0 0% 98%;
     --popover: 224 48% 10%;
     --popover-foreground: 0 0% 98%;
-    --primary: 217 91% 60%;
+    --primary: 210 82% 48%;
     --primary-foreground: 0 0% 98%;
     --secondary: 224 48% 15%;
     --secondary-foreground: 0 0% 98%;
@@ -55,20 +55,20 @@
     --muted-foreground: 220 10% 60%;
     --accent: 224 48% 20%;
     --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
+    --destructive: 0 63% 31%;
     --destructive-foreground: 0 0% 98%;
     --border: 224 48% 18%;
     --input: 224 48% 15%;
-    --ring: 217 91% 60%;
+    --ring: 210 82% 48%;
 
     --sidebar-background: 224 48% 10%;
     --sidebar-foreground: 220 13% 85%;
-    --sidebar-primary: 217 91% 65%;
+    --sidebar-primary: 210 82% 55%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 224 48% 20%;
     --sidebar-accent-foreground: 0 0% 98%;
     --sidebar-border: 224 48% 18%;
-    --sidebar-ring: 217 91% 65%;
+    --sidebar-ring: 210 82% 55%;
   }
 }
 
@@ -82,5 +82,39 @@
   }
   h1,h2,h3,h4,h5,h6 {
     font-family: var(--font-headline);
+  }
+  .prose {
+    --tw-prose-body: hsl(var(--foreground) / 0.9);
+    --tw-prose-headings: hsl(var(--foreground));
+    --tw-prose-lead: hsl(var(--muted-foreground));
+    --tw-prose-links: hsl(var(--primary));
+    --tw-prose-bold: hsl(var(--foreground));
+    --tw-prose-counters: hsl(var(--muted-foreground));
+    --tw-prose-bullets: hsl(var(--border));
+    --tw-prose-hr: hsl(var(--border));
+    --tw-prose-quotes: hsl(var(--foreground));
+    --tw-prose-quote-borders: hsl(var(--border));
+    --tw-prose-captions: hsl(var(--muted-foreground));
+    --tw-prose-code: hsl(var(--foreground));
+    --tw-prose-pre-code: hsl(var(--card-foreground));
+    --tw-prose-pre-bg: hsl(var(--card));
+    --tw-prose-th-borders: hsl(var(--border));
+    --tw-prose-td-borders: hsl(var(--border));
+    --tw-prose-invert-body: hsl(var(--foreground));
+    --tw-prose-invert-headings: hsl(var(--foreground));
+    --tw-prose-invert-lead: hsl(var(--muted-foreground));
+    --tw-prose-invert-links: hsl(var(--primary));
+    --tw-prose-invert-bold: hsl(var(--foreground));
+    --tw-prose-invert-counters: hsl(var(--muted-foreground));
+    --tw-prose-invert-bullets: hsl(var(--border));
+    --tw-prose-invert-hr: hsl(var(--border));
+    --tw-prose-invert-quotes: hsl(var(--foreground));
+    --tw-prose-invert-quote-borders: hsl(var(--border));
+    --tw-prose-invert-captions: hsl(var(--muted-foreground));
+    --tw-prose-invert-code: hsl(var(--foreground));
+    --tw-prose-invert-pre-code: hsl(var(--card-foreground));
+    --tw-prose-invert-pre-bg: hsl(var(--card));
+    --tw-prose-invert-th-borders: hsl(var(--border));
+    --tw-prose-invert-td-borders: hsl(var(--border));
   }
 }
