@@ -1,0 +1,63 @@
+
+[
+  {
+    "FNDP": 200001,
+    "FCDMVT": "C",
+    "FMTCR": 2100.50,
+    "FMTREG": 2100.50,
+    "FJJCR": 25, "FMMCR": 5, "FAACR": 2024,
+    "FJJREG": 28, "FMMREG": 5, "FAAREG": 2024,
+    "FMDREG": "Virement",
+    "FCHQBD": ""
+  },
+  {
+    "FNDP": 200001,
+    "FCDMVT": "C",
+    "FMTCR": 2100.50,
+    "FMTREG": 2100.50,
+    "FJJCR": 25, "FMMCR": 4, "FAACR": 2024,
+    "FJJREG": 28, "FMMREG": 4, "FAAREG": 2024,
+    "FMDREG": "Virement",
+    "FCHQBD": ""
+  },
+  {
+    "FNDP": 200002,
+    "FCDMVT": "C",
+    "FMTCR": 1850.75,
+    "FMTREG": 1850.75,
+    "FJJCR": 25, "FMMCR": 5, "FAACR": 2024,
+    "FJJREG": 28, "FMMREG": 5, "FAAREG": 2024,
+    "FMDREG": "Virement",
+    "FCHQBD": ""
+  },
+  {
+    "FNDP": 200003,
+    "FCDMVT": "C",
+    "FMTCR": 2200.00,
+    "FMTREG": 2200.00,
+    "FJJCR": 25, "FMMCR": 5, "FAACR": 2024,
+    "FJJREG": 29, "FMMREG": 5, "FAAREG": 2024,
+    "FMDREG": "Chèque",
+    "FCHQBD": "CHK12345"
+  },
+  {
+    "FNDP": 200004,
+    "FCDMVT": "C",
+    "FMTCR": 1600.25,
+    "FMTREG": 1600.25,
+    "FJJCR": 25, "FMMCR": 5, "FAACR": 2024,
+    "FJJREG": 28, "FMMREG": 5, "FAAREG": 2024,
+    "FMDREG": "Virement",
+    "FCHQBD": ""
+  },
+  {
+    "FNDP": 200002,
+    "FCDMVT": "D",
+    "FMTCR": 50.00,
+    "FMTREG": 50.00,
+    "FJJCR": 10, "FMMCR": 4, "FAACR": 2024,
+    "FJJREG": 10, "FMMREG": 4, "FAAREG": 2024,
+    "FMDREG": "Prélèvement",
+    "FCHQBD": "TAX"
+  }
+]

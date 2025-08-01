@@ -1,0 +1,51 @@
+
+[
+  {
+    "ALLOC": 200001,
+    "VMAT": 101,
+    "VCPTE": "FR7630001007941234567890185",
+    "VNOM1": "Dupont",
+    "VNOM2": "Jean",
+    "VADR1": "BNP Paribas",
+    "VADR2": "Agence Centrale",
+    "VADR3": "2 Place de l'Opéra",
+    "VVILL": "Paris",
+    "VPAYS": "France"
+  },
+  {
+    "ALLOC": 200002,
+    "VMAT": 102,
+    "VCPTE": "FR7630002005509876543210927",
+    "VNOM1": "Martin",
+    "VNOM2": "Marie",
+    "VADR1": "Société Générale",
+    "VADR2": "Agence Paris-Étoile",
+    "VADR3": "5 Avenue de la Grande Armée",
+    "VVILL": "Paris",
+    "VPAYS": "France"
+  },
+  {
+    "ALLOC": 200003,
+    "VMAT": 103,
+    "VCPTE": "",
+    "VNOM1": "Petit",
+    "VNOM2": "Lucas",
+    "VADR1": "",
+    "VADR2": "",
+    "VADR3": "",
+    "VVILL": "",
+    "VPAYS": ""
+  },
+  {
+    "ALLOC": 200004,
+    "VMAT": 104,
+    "VCPTE": "FR7630004008101231234567834",
+    "VNOM1": "Dubois",
+    "VNOM2": "Juliette",
+    "VADR1": "Crédit Agricole",
+    "VADR2": "Agence Marseille Vieux-Port",
+    "VADR3": "1 Quai des Belges",
+    "VVILL": "Marseille",
+    "VPAYS": "France"
+  }
+]
