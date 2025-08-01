@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -340,3 +341,5 @@ export default function PensionerDetailClient({ id }: { id: string }) {
     </div>
   );
 }
+
+    
