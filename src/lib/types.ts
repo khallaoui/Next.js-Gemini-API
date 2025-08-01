@@ -14,7 +14,7 @@ export interface PersonalInfo {
 }
 
 export interface Pensioner {
-  SCPTE: number; // Unique ID from MCRETRAI
+  SCPTE: number; // Unique ID from mcretrai, references accounts.account_id
   matricule: string;
   status: StatutAdherent;
   points: number;
@@ -26,18 +26,20 @@ export interface Pensioner {
 }
 
 export interface Operation {
-  FNDP: number; // Corresponds to SCPTE
-  type: 'C' | 'D'; // C for Credit, D for Debit
-  amount: number;
-  date: string; // ISO 8601 date string
-  paymentMethod: string;
-  reference: string;
+  FNDP: number; // Corresponds to SCPTE, references accounts.account_id
+  FCDMVT: 'C' | 'D'; // C for Credit, D for Debit
+  FMTREG: number;
+  FJJREG: number; // Day
+  FMMREG: number; // Month
+  FAAREG: number; // Year
+  FMDREG: string;
+  FCHQBD: string;
 }
 
 export interface Banking {
-  ALLOC: number; // Corresponds to SCPTE
-  matricule: number;
-  accountNumber: string;
-  accountHolder: string;
-  bankAddress: string;
+  ALLOC: number; // Corresponds to SCPTE, references accounts.account_id
+  VMAT: number; // References mcretrai.MATRIC
+  VCPTE: string;
+  VNOM1: string;
+  VADR1: string;
 }

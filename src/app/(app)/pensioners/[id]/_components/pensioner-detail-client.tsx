@@ -32,7 +32,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
-import { type Pensioner } from "@/lib/types";
+import { type Pensioner, type Operation } from "@/lib/types";
 import pensionersData from "@/data/pensioners.json";
 import operationsData from "@/data/operations.json";
 import bankingData from "@/data/banking.json";
@@ -207,8 +207,8 @@ export default function PensionerDetailClient({ id }: { id: string }) {
                     <p className="text-muted-foreground">{pensioner.paymentMethod}</p>
                 </div>
                 <div>
-                    <p className="font-medium">Statut</p>
-                    <div className="text-muted-foreground"><Badge>{pensioner.status}</Badge></div>
+                  <p className="font-medium">Statut</p>
+                  <div className="text-muted-foreground"><Badge>{pensioner.status}</Badge></div>
                 </div>
             </CardContent>
           </Card>
