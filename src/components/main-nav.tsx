@@ -6,7 +6,8 @@ import {
   Home,
   Users,
   BrainCircuit,
-  BarChart3
+  BarChart3,
+  Building
 } from "lucide-react"
 
 import {
@@ -20,7 +21,8 @@ export function MainNav() {
 
   const menuItems = [
     { href: "/", label: "Tableau de Bord", icon: Home },
-    { href: "/pensioners", label: "Pensionnaires", icon: Users },
+    { href: "/pensioners", label: "Adhérents", icon: Users },
+    { href: "/groups", label: "Groupes", icon: Building },
     { href: "/analysis", label: "Analyse IA", icon: BrainCircuit },
     { href: "/statistics", label: "Statistiques", icon: BarChart3 },
   ]

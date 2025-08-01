@@ -30,6 +30,7 @@ export default function PensionersPage() {
   const [searchTerm, setSearchTerm] = React.useState("");
   const [selectedCity, setSelectedCity] = React.useState("all");
   const [selectedPaymentMethod, setSelectedPaymentMethod] = React.useState("all");
+  const [selectedStatus, setSelectedStatus] = React.useState("all");
 
   const cities = React.useMemo(() => {
     const allCities = pensionersData.map((p) => p.personalInfo.ville);
@@ -39,6 +40,11 @@ export default function PensionersPage() {
   const paymentMethods = React.useMemo(() => {
     const allMethods = pensionersData.map((p) => p.paymentMethod);
     return ["all", ...Array.from(new Set(allMethods))];
+  }, []);
+  
+  const statuses = React.useMemo(() => {
+    const allStatuses = pensionersData.map((p) => p.status);
+    return ["all", ...Array.from(new Set(allStatuses))];
   }, []);
 
   React.useEffect(() => {
@@ -62,25 +68,36 @@ export default function PensionersPage() {
     if (selectedPaymentMethod !== "all") {
       filtered = filtered.filter((p) => p.paymentMethod === selectedPaymentMethod);
     }
+    
+    if (selectedStatus !== "all") {
+      filtered = filtered.filter((p) => p.status === selectedStatus);
+    }
 
     setPensioners(filtered);
-  }, [searchTerm, selectedCity, selectedPaymentMethod]);
+  }, [searchTerm, selectedCity, selectedPaymentMethod, selectedStatus]);
 
   const getStatusVariant = (netRgt: number) => {
     if (netRgt > 2000) return "default";
     if (netRgt > 1700) return "secondary";
     return "outline";
   };
+  
+  const getPensionerStatusVariant = (status: string) => {
+    if (status === "ACTIF") return "default";
+    if (status === "INACTIF") return "secondary";
+    return "outline";
+  };
+
 
   return (
     <div className="flex flex-col gap-6">
       <header>
         <h1 className="font-headline text-3xl font-bold flex items-center gap-3">
             <Users className="h-8 w-8" />
-            Dossiers des Pensionnaires
+            Adhérents Individuels & Allocataires
         </h1>
         <p className="text-muted-foreground mt-1">
-          Recherchez, filtrez et gérez les dossiers des pensionnaires.
+          Recherchez, filtrez et gérez les dossiers des adhérents et allocataires.
         </p>
       </header>
 
@@ -99,9 +116,21 @@ export default function PensionersPage() {
               className="pl-10"
             />
           </div>
-          <div className="grid grid-cols-2 gap-4 md:flex">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:flex">
+             <Select value={selectedStatus} onValueChange={setSelectedStatus}>
+              <SelectTrigger className="w-full md:w-[160px]">
+                <SelectValue placeholder="Filtrer par Statut" />
+              </SelectTrigger>
+              <SelectContent>
+                {statuses.map((status) => (
+                  <SelectItem key={status} value={status}>
+                    {status === "all" ? "Tous les statuts" : status}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
              <Select value={selectedCity} onValueChange={setSelectedCity}>
-              <SelectTrigger className="w-full md:w-[180px]">
+              <SelectTrigger className="w-full md:w-[160px]">
                 <SelectValue placeholder="Filtrer par Ville" />
               </SelectTrigger>
               <SelectContent>
@@ -135,8 +164,8 @@ export default function PensionersPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>N° Dossier</TableHead>
-                  <TableHead>Matricule</TableHead>
                   <TableHead>Nom Complet</TableHead>
+                  <TableHead>Statut</TableHead>
                   <TableHead>Net Payé</TableHead>
                   <TableHead>Ville</TableHead>
                   <TableHead>Mode de Paiement</TableHead>
@@ -148,9 +177,11 @@ export default function PensionersPage() {
                   pensioners.map((pensioner) => (
                     <TableRow key={pensioner.SCPTE}>
                       <TableCell className="font-medium">{pensioner.SCPTE}</TableCell>
-                      <TableCell>{pensioner.matricule}</TableCell>
                       <TableCell>
                         {pensioner.personalInfo.firstName} {pensioner.personalInfo.lastName}
+                      </TableCell>
+                       <TableCell>
+                        <Badge variant={getPensionerStatusVariant(pensioner.status)}>{pensioner.status}</Badge>
                       </TableCell>
                       <TableCell>
                         <Badge variant={getStatusVariant(pensioner.netPaid)} className="font-mono">
