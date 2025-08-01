@@ -2,10 +2,10 @@
 
 import { usePathname } from "next/navigation"
 import {
-  BarChart2,
   Home,
   Users,
-  BrainCircuit
+  BrainCircuit,
+  BarChart3
 } from "lucide-react"
 
 import {
@@ -21,6 +21,7 @@ export function MainNav() {
     { href: "/", label: "Dashboard", icon: Home },
     { href: "/pensioners", label: "Pensioners", icon: Users },
     { href: "/analysis", label: "Analysis", icon: BrainCircuit },
+    { href: "/statistics", label: "Statistics", icon: BarChart3 },
   ]
 
   return (
