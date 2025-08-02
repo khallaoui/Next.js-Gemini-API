@@ -1,9 +1,10 @@
 import PensionerDetailClient from "./_components/pensioner-detail-client";
 
-export default function PensionerDetailPage({
+export default async function PensionerDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  return <PensionerDetailClient id={params.id} />;
+  const { id } = await params;
+  return <PensionerDetailClient id={id} />;
 }
