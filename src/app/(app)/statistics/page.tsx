@@ -41,7 +41,7 @@ export default function StatisticsPage() {
           <CardHeader>
             <CardTitle>Modes de Paiement</CardTitle>
             <CardDescription>Répartition des modes de paiement utilisés.</CardDescription>
-          </CardHeader>
+          </Header>
           <CardContent>
             <PaymentMethodsChart />
           </CardContent>
