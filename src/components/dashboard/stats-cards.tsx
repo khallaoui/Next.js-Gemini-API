@@ -2,92 +2,77 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Euro, Landmark, CalendarClock } from "lucide-react";
+import { Users, UserCheck, UserCog, Undo2 } from "lucide-react";
 
 import pensioners from "@/data/pensioners.json";
 import operations from "@/data/operations.json";
 
 export function StatsCards() {
   const totalPensioners = pensioners.length;
-
-  const currentMonth = new Date().getMonth() + 1;
-  const currentYear = new Date().getFullYear();
-
-  const totalMonthlyPayments = operations
-    .filter(
-      (op) =>
-        op.FMMREG === currentMonth &&
-        op.FAAREG === currentYear &&
-        op.FCDMVT === "C"
-    )
-    .reduce((acc, op) => acc + op.FMTREG, 0);
-
-  const newPensionersThisMonth = pensioners.filter((p) => {
-    // This is a simplification; in a real scenario, we'd check an adhesion date.
-    // For now, let's assume the last digit of their ID represents joining month for demo purposes.
-    return (p.SCPTE % 12) + 1 === currentMonth;
-  }).length;
   
-  const monthName = new Date().toLocaleString("fr-FR", { month: "long" });
+  const activeAffiliates = pensioners.filter(p => p.status === "ACTIF").length;
+  
+  // For this simulation, allocataires are all pensioners.
+  const totalAllocataires = pensioners.length;
+
+  const refundedCount = new Set(operations.filter(op => op.FCDMVT === "D").map(op => op.FNDP)).size;
+
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">
-            Total des Pensionnaires
+            Total des Adhérents
           </CardTitle>
           <Users className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{totalPensioners}</div>
           <p className="text-xs text-muted-foreground">
-            Total des membres actifs et retraités
+            Tous les membres (actifs et inactifs)
           </p>
         </CardContent>
       </Card>
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">
-            Prestations Payées (Ce Mois-ci)
+            Affiliés Actifs
           </CardTitle>
-          <Euro className="h-4 w-4 text-muted-foreground" />
+          <UserCheck className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">
-            {totalMonthlyPayments.toLocaleString("fr-FR", {
-              style: "currency",
-              currency: "EUR",
-            })}
+            {activeAffiliates}
           </div>
           <p className="text-xs text-muted-foreground">
-            Montant total décaissé en {monthName}
+            Membres qui cotisent actuellement
           </p>
         </CardContent>
       </Card>
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">
-            Nouveaux Pensionnaires (Ce Mois-ci)
+            Total des Allocataires
           </CardTitle>
-          <CalendarClock className="h-4 w-4 text-muted-foreground" />
+          <UserCog className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">+{newPensionersThisMonth}</div>
-          <p className="text-xs text-muted-foreground">
-            Nouveaux membres ce mois-ci
+          <div className="text-2xl font-bold">{totalAllocataires}</div>
+           <p className="text-xs text-muted-foreground">
+            Personnes bénéficiant d'une allocation
           </p>
         </CardContent>
       </Card>
        <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Modes de Paiement</CardTitle>
-          <Landmark className="h-4 w-4 text-muted-foreground" />
+          <CardTitle className="text-sm font-medium">Total des Remboursés</CardTitle>
+          <Undo2 className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">2</div>
+          <div className="text-2xl font-bold">{refundedCount}</div>
           <p className="text-xs text-muted-foreground">
-            Virement & Chèque
+            Personnes ayant eu un remboursement
           </p>
         </CardContent>
       </Card>
