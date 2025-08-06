@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Spring Boot Connection Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .result { margin: 10px 0; padding: 10px; border-radius: 4px; }
+        .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background-color: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Spring Boot Backend Test</h1>
+    
+    <div>
+        <button onclick="testDashboard()">Test Dashboard API</button>
+        <button onclick="testLogin()">Test Login API</button>
+        <button onclick="testMe()">Test /me API</button>
+        <button onclick="clearResults()">Clear Results</button>
+    </div>
+    
+    <div id="results"></div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:8080';
+        
+        function addResult(message, type = 'info') {
+            const results = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = `result ${type}`;
+            div.innerHTML = `<strong>${new Date().toLocaleTimeString()}</strong>: ${message}`;
+            results.appendChild(div);
+        }
+        
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+        }
+        
+        async function testDashboard() {
+            addResult('Testing dashboard API...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/dashboard/stats`, {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    addResult(`✅ Dashboard API works! Data: ${JSON.stringify(data)}`, 'success');
+                } else {
+                    addResult(`❌ Dashboard API failed! Status: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                addResult(`❌ Dashboard API error: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testLogin() {
+            addResult('Testing login API...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: 'admin',
+                        password: 'admin123'
+                    }),
+                    credentials: 'include'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    addResult(`✅ Login successful! User: ${JSON.stringify(data)}`, 'success');
+                    
+                    // Check cookies
+                    const cookies = document.cookie;
+                    if (cookies.includes('JSESSIONID')) {
+                        addResult('✅ Session cookie (JSESSIONID) was set', 'success');
+                    } else {
+                        addResult('⚠️ No session cookie found', 'error');
+                    }
+                } else {
+                    const errorText = await response.text();
+                    addResult(`❌ Login failed! Status: ${response.status}, Error: ${errorText}`, 'error');
+                }
+            } catch (error) {
+                addResult(`❌ Login API error: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testMe() {
+            addResult('Testing /me API...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/auth/me`, {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    addResult(`✅ /me API works! User: ${JSON.stringify(data)}`, 'success');
+                } else {
+                    const errorText = await response.text();
+                    addResult(`❌ /me API failed! Status: ${response.status}, Error: ${errorText}`, 'error');
+                }
+            } catch (error) {
+                addResult(`❌ /me API error: ${error.message}`, 'error');
+            }
+        }
+    </script>
+</body>
+</html>

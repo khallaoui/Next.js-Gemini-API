@@ -21,36 +21,51 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Search, Building, Eye, Users } from "lucide-react";
-import groupsData from "@/data/groups.json";
-
-interface Group {
-  id: number;
-  companyName: string;
-  sector: string;
-  memberCount: number;
-  totalContribution: number;
-  city: string;
-}
+import { Search, Building, Eye, Users, Plus } from "lucide-react";
+import { companyGroupApi, type CompanyGroup } from "@/lib/api";
 
 export default function GroupsPage() {
-  const [groups, setGroups] = React.useState<Group[]>(groupsData);
+  const [allGroups, setAllGroups] = React.useState<CompanyGroup[]>([]);
+  const [filteredGroups, setFilteredGroups] = React.useState<CompanyGroup[]>([]);
   const [searchTerm, setSearchTerm] = React.useState("");
   const [selectedSector, setSelectedSector] = React.useState("all");
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState<string | null>(null);
 
-  const sectors = React.useMemo(() => {
-    const allSectors = groupsData.map((g) => g.sector);
-    return ["all", ...Array.from(new Set(allSectors))];
+  // Fetch groups from API
+  React.useEffect(() => {
+    async function fetchGroups() {
+      try {
+        setLoading(true);
+        const data = await companyGroupApi.getAll();
+        setAllGroups(data);
+        setFilteredGroups(data);
+      } catch (err: any) {
+        console.error("Error fetching company groups:", err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchGroups();
   }, []);
 
+  const sectors = React.useMemo(() => {
+    const allSectors = allGroups.map((g) => g.sector);
+    return ["all", ...Array.from(new Set(allSectors))];
+  }, [allGroups]);
+
+  // Filter groups based on search and filters
   React.useEffect(() => {
-    let filtered = groupsData;
+    let filtered = allGroups;
 
     if (searchTerm) {
       const lowercasedTerm = searchTerm.toLowerCase();
       filtered = filtered.filter(
         (group) =>
-          group.companyName.toLowerCase().includes(lowercasedTerm)
+          group.companyName.toLowerCase().includes(lowercasedTerm) ||
+          group.city.toLowerCase().includes(lowercasedTerm)
       );
     }
 
@@ -58,8 +73,48 @@ export default function GroupsPage() {
       filtered = filtered.filter((g) => g.sector === selectedSector);
     }
 
-    setGroups(filtered);
-  }, [searchTerm, selectedSector]);
+    setFilteredGroups(filtered);
+  }, [searchTerm, selectedSector, allGroups]);
+
+  if (loading) {
+    return (
+      <div className="flex flex-col gap-6">
+        <header>
+          <h1 className="font-headline text-3xl font-bold flex items-center gap-3">
+            <Building className="h-8 w-8" />
+            Adhérents en Groupe
+          </h1>
+          <p className="text-muted-foreground mt-1">
+            Chargement des données des groupes d'entreprises...
+          </p>
+        </header>
+        <div className="animate-pulse space-y-4">
+          <div className="h-32 bg-gray-200 rounded-lg"></div>
+          <div className="h-96 bg-gray-200 rounded-lg"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col gap-6">
+        <header>
+          <h1 className="font-headline text-3xl font-bold flex items-center gap-3">
+            <Building className="h-8 w-8" />
+            Adhérents en Groupe
+          </h1>
+        </header>
+        <div className="text-red-600 p-4 bg-red-50 rounded-lg border border-red-200">
+          <h3 className="font-semibold">Erreur lors du chargement des groupes</h3>
+          <p className="text-sm mt-1">{error}</p>
+          <p className="text-xs mt-2 text-red-500">
+            Assurez-vous que le backend Spring Boot fonctionne sur http://localhost:8080
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-6">
@@ -120,8 +175,8 @@ export default function GroupsPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {groups.length > 0 ? (
-                  groups.map((group) => (
+                {filteredGroups.length > 0 ? (
+                  filteredGroups.map((group) => (
                     <TableRow key={group.id}>
                       <TableCell className="font-medium">{group.companyName}</TableCell>
                       <TableCell>

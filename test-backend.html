@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Backend Connection Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .result { margin: 10px 0; padding: 10px; border-radius: 4px; }
+        .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background-color: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Spring Boot Backend Connection Test</h1>
+    
+    <div>
+        <button onclick="testConnection()">Test Basic Connection</button>
+        <button onclick="testLogin()">Test Login</button>
+        <button onclick="testMe()">Test /me Endpoint</button>
+        <button onclick="clearResults()">Clear Results</button>
+    </div>
+    
+    <div id="results"></div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:8080';
+        
+        function addResult(message, type = 'info') {
+            const results = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = `result ${type}`;
+            div.innerHTML = `<strong>${new Date().toLocaleTimeString()}</strong>: ${message}`;
+            results.appendChild(div);
+        }
+        
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+        }
+        
+        async function testConnection() {
+            addResult('Testing basic connection to Spring Boot...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+                    method: 'OPTIONS',
+                });
+                
+                addResult(`✅ Connection successful! Status: ${response.status}`, 'success');
+                addResult(`CORS headers: ${JSON.stringify(Object.fromEntries(response.headers))}`, 'info');
+            } catch (error) {
+                addResult(`❌ Connection failed: ${error.message}`, 'error');
+                addResult('Make sure your Spring Boot application is running on port 8080', 'error');
+            }
+        }
+        
+        async function testLogin() {
+            addResult('Testing login endpoint...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: 'admin',
+                        password: 'admin123'
+                    }),
+                    credentials: 'include'
+                });
+                
+                const responseText = await response.text();
+                
+                if (response.ok) {
+                    addResult(`✅ Login successful! Response: ${responseText}`, 'success');
+                    
+                    // Check if JSESSIONID cookie was set
+                    const cookies = document.cookie;
+                    if (cookies.includes('JSESSIONID')) {
+                        addResult('✅ Session cookie (JSESSIONID) was set', 'success');
+                    } else {
+                        addResult('⚠️ No session cookie found', 'error');
+                    }
+                } else {
+                    addResult(`❌ Login failed! Status: ${response.status}, Response: ${responseText}`, 'error');
+                }
+            } catch (error) {
+                addResult(`❌ Login request failed: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testMe() {
+            addResult('Testing /me endpoint...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/auth/me`, {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+                
+                const responseText = await response.text();
+                
+                if (response.ok) {
+                    addResult(`✅ /me endpoint successful! Response: ${responseText}`, 'success');
+                } else {
+                    addResult(`❌ /me endpoint failed! Status: ${response.status}, Response: ${responseText}`, 'error');
+                    if (response.status === 401) {
+                        addResult('This is expected if you haven\'t logged in yet', 'info');
+                    }
+                }
+            } catch (error) {
+                addResult(`❌ /me request failed: ${error.message}`, 'error');
+            }
+        }
+        
+        // Auto-test connection on page load
+        window.onload = function() {
+            addResult('Page loaded. Click "Test Basic Connection" to start testing.', 'info');
+        };
+    </script>
+</body>
+</html>

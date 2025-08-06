@@ -1,6 +1,7 @@
 import type {Metadata} from 'next';
 import { Inter, Lexend } from 'next/font/google'
 import { Toaster } from "@/components/ui/toaster"
+import { AuthProvider } from "@/contexts/auth-context"
 import './globals.css';
 
 const inter = Inter({ 
@@ -28,7 +29,9 @@ export default function RootLayout({
   return (
     <html lang="fr" suppressHydrationWarning>
       <body className={`${inter.variable} ${lexend.variable} font-body antialiased`}>
-        {children}
+        <AuthProvider>
+          {children}
+        </AuthProvider>
         <Toaster />
       </body>
     </html>

@@ -33,11 +33,16 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
-import { type Pensioner, type Operation, type Demande, type StatutDemande } from "@/lib/types";
-import pensionersData from "@/data/pensioners.json";
-import operationsData from "@/data/operations.json";
-import bankingData from "@/data/banking.json";
-import demandesData from "@/data/demandes.json";
+import { 
+  pensionerApi, 
+  operationApi, 
+  bankingApi, 
+  demandeApi,
+  type Pensioner, 
+  type Operation, 
+  type Demande, 
+  type BankingInfo 
+} from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 import { generateRecordSummary } from "@/ai/flows/generate-record-summary";
 import { format } from "date-fns";
@@ -45,55 +50,87 @@ import { fr } from 'date-fns/locale';
 
 export default function PensionerDetailClient({ id }: { id: string }) {
   const { toast } = useToast();
+  const [pensioner, setPensioner] = React.useState<Pensioner | null>(null);
+  const [operations, setOperations] = React.useState<Operation[]>([]);
+  const [banking, setBanking] = React.useState<BankingInfo | null>(null);
+  const [demandes, setDemandes] = React.useState<Demande[]>([]);
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState<string | null>(null);
   const [summary, setSummary] = React.useState<string | null>(null);
   const [isLoadingSummary, setIsLoadingSummary] = React.useState(false);
 
-  const pensioner = pensionersData.find(
-    (p) => p.SCPTE === parseInt(id)
-  ) as Pensioner | undefined;
-
-  const operations = operationsData.filter(
-    (o) => o.FNDP === parseInt(id)
-  );
-
-  const banking = bankingData.find(
-    (b) => b.ALLOC === parseInt(id)
-  );
-  
-  const demandes = demandesData.filter(
-    (d) => d.pensionerId === parseInt(id)
-  );
-
-
   React.useEffect(() => {
-    if (!pensioner) {
-      notFound();
+    async function fetchPensionerData() {
+      try {
+        setLoading(true);
+        const pensionerId = parseInt(id);
+        
+        const [pensionerData, operationsData, demandesData] = await Promise.all([
+          pensionerApi.getById(pensionerId),
+          operationApi.getByPensionerId(pensionerId),
+          demandeApi.getByPensionerId(pensionerId).catch(() => []), // Optional data
+        ]);
+
+        setPensioner(pensionerData);
+        setOperations(operationsData);
+        setDemandes(demandesData);
+
+        // Try to fetch banking info (optional)
+        try {
+          const bankingData = await bankingApi.getByPensionerId(pensionerId);
+          setBanking(bankingData);
+        } catch (err) {
+          // Banking info is optional
+          setBanking(null);
+        }
+
+      } catch (err: any) {
+        console.error("Error fetching pensioner data:", err);
+        setError(err.message);
+        if (err.message.includes('404')) {
+          notFound();
+        }
+      } finally {
+        setLoading(false);
+      }
     }
-  }, [pensioner]);
 
+    fetchPensionerData();
+  }, [id]);
 
-  if (!pensioner) {
+  if (loading) {
     return (
-        <div className="flex flex-col gap-6">
-            <div className="flex items-start justify-between">
-                <div>
-                    <Skeleton className="h-9 w-48" />
-                    <Skeleton className="h-5 w-32 mt-2" />
-                </div>
-                <Skeleton className="h-10 w-32" />
-            </div>
-             <div className="grid gap-6 lg:grid-cols-3">
-                <div className="lg:col-span-2 space-y-6">
-                    <Skeleton className="h-64 w-full" />
-                    <Skeleton className="h-64 w-full" />
-                </div>
-                <div className="space-y-6">
-                    <Skeleton className="h-48 w-full" />
-                    <Skeleton className="h-48 w-full" />
-                </div>
-            </div>
-            <Skeleton className="h-96 w-full" />
+      <div className="flex flex-col gap-6">
+        <div className="flex items-start justify-between">
+          <div>
+            <Skeleton className="h-9 w-48" />
+            <Skeleton className="h-5 w-32 mt-2" />
+          </div>
+          <Skeleton className="h-10 w-32" />
         </div>
+        <div className="grid gap-6 lg:grid-cols-3">
+          <div className="lg:col-span-2 space-y-6">
+            <Skeleton className="h-64 w-full" />
+            <Skeleton className="h-64 w-full" />
+          </div>
+          <div className="space-y-6">
+            <Skeleton className="h-48 w-full" />
+            <Skeleton className="h-48 w-full" />
+          </div>
+        </div>
+        <Skeleton className="h-96 w-full" />
+      </div>
+    );
+  }
+
+  if (error || !pensioner) {
+    return (
+      <div className="flex flex-col gap-6">
+        <div className="text-red-600 p-4 bg-red-50 rounded-lg border border-red-200">
+          <h3 className="font-semibold">Erreur lors du chargement du pensionnaire</h3>
+          <p className="text-sm mt-1">{error || "Pensionnaire non trouvé"}</p>
+        </div>
+      </div>
     );
   }
 
@@ -133,7 +170,7 @@ export default function PensionerDetailClient({ id }: { id: string }) {
     }
   }
   
-  const getDemandeStatusVariant = (status: StatutDemande) => {
+  const getDemandeStatusVariant = (status: string) => {
     switch(status) {
       case 'Approuvée': return 'default';
       case 'Rejetée': return 'destructive';
@@ -142,14 +179,24 @@ export default function PensionerDetailClient({ id }: { id: string }) {
     }
   }
 
+  const getPaymentMethodDisplayText = (method: string) => {
+    switch (method) {
+      case 'BANK_TRANSFER': return 'Virement Bancaire';
+      case 'CHECK': return 'Chèque';
+      case 'CASH': return 'Espèces';
+      case 'DIGITAL_WALLET': return 'Portefeuille Numérique';
+      default: return method;
+    }
+  }
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-start justify-between">
         <div>
             <h1 className="font-headline text-3xl font-bold">
-              {pensioner.personalInfo.firstName} {pensioner.personalInfo.lastName}
+              {pensioner.name}
             </h1>
-            <p className="text-muted-foreground mt-1">Dossier N° {pensioner.SCPTE}</p>
+            <p className="text-muted-foreground mt-1">Dossier N° {pensioner.id}</p>
         </div>
         <Button asChild variant="outline">
             <Link href="/pensioners">
@@ -170,35 +217,35 @@ export default function PensionerDetailClient({ id }: { id: string }) {
             </CardHeader>
             <CardContent className="grid grid-cols-2 gap-4 text-sm">
               <div>
-                <p className="font-medium">Matricule</p>
-                <p className="text-muted-foreground">{pensioner.matricule}</p>
+                <p className="font-medium">Nom Complet</p>
+                <p className="text-muted-foreground">{pensioner.name}</p>
               </div>
               <div>
-                <p className="font-medium">CIN</p>
-                <p className="text-muted-foreground">{pensioner.personalInfo.cin}</p>
+                <p className="font-medium">Ville</p>
+                <p className="text-muted-foreground">{pensioner.city}</p>
               </div>
-              <div>
-                <p className="font-medium">Date de Naissance</p>
-                <p className="text-muted-foreground">
-                  {format(new Date(pensioner.personalInfo.dateOfBirth), "PPP", { locale: fr })}
-                </p>
-              </div>
-              <div>
-                <p className="font-medium">Sexe</p>
-                <p className="text-muted-foreground">
-                  {pensioner.personalInfo.gender === "M" ? "Masculin" : "Féminin"}
-                </p>
-              </div>
-              <div>
-                <p className="font-medium">Situation Familiale</p>
-                <p className="text-muted-foreground">{pensioner.personalInfo.familySituation}</p>
-              </div>
-              <div className="col-span-2">
-                <p className="font-medium">Adresse</p>
-                <p className="text-muted-foreground">
-                  {pensioner.personalInfo.address}
-                </p>
-              </div>
+              {pensioner.birthDate && (
+                <div>
+                  <p className="font-medium">Date de Naissance</p>
+                  <p className="text-muted-foreground">
+                    {format(new Date(pensioner.birthDate), "PPP", { locale: fr })}
+                  </p>
+                </div>
+              )}
+              {pensioner.phoneNumber && (
+                <div>
+                  <p className="font-medium">Téléphone</p>
+                  <p className="text-muted-foreground">{pensioner.phoneNumber}</p>
+                </div>
+              )}
+              {pensioner.lastPaymentDate && (
+                <div className="col-span-2">
+                  <p className="font-medium">Dernier Paiement</p>
+                  <p className="text-muted-foreground">
+                    {format(new Date(pensioner.lastPaymentDate), "PPP", { locale: fr })}
+                  </p>
+                </div>
+              )}
             </CardContent>
           </Card>
 
@@ -211,28 +258,17 @@ export default function PensionerDetailClient({ id }: { id: string }) {
             </CardHeader>
             <CardContent className="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                    <p className="font-medium">Code Pension</p>
-                    <p className="text-muted-foreground">{pensioner.pensionCode}</p>
-                </div>
-                <div>
-                    <p className="font-medium">Points</p>
-                    <p className="text-muted-foreground">{pensioner.points}</p>
-                </div>
-                <div>
-                    <p className="font-medium">Net Calculé</p>
-                    <p className="text-muted-foreground">{pensioner.netCalculated.toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}</p>
-                </div>
-                 <div>
-                    <p className="font-medium">Net Payé</p>
-                    <p className="text-muted-foreground">{pensioner.netPaid.toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}</p>
+                    <p className="font-medium">Paiement Mensuel</p>
+                    <p className="text-muted-foreground">
+                      {pensioner.monthlyPayment.toLocaleString("fr-MA", { 
+                        style: "currency", 
+                        currency: "MAD" 
+                      })}
+                    </p>
                 </div>
                  <div>
                     <p className="font-medium">Mode de Paiement</p>
-                    <p className="text-muted-foreground">{pensioner.paymentMethod}</p>
-                </div>
-                <div>
-                  <p className="font-medium">Statut</p>
-                  <div className="text-muted-foreground"><Badge>{pensioner.status}</Badge></div>
+                    <p className="text-muted-foreground">{getPaymentMethodDisplayText(pensioner.paymentMethod)}</p>
                 </div>
             </CardContent>
           </Card>
@@ -247,22 +283,22 @@ export default function PensionerDetailClient({ id }: { id: string }) {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 text-sm">
-              {banking && banking.VCPTE ? (
+              {banking && banking.accountNumber ? (
                 <>
                   <div>
                     <p className="font-medium">Titulaire du Compte</p>
                     <p className="text-muted-foreground">
-                      {banking.VNOM1}
+                      {banking.accountHolderName}
                     </p>
                   </div>
                   <div>
-                    <p className="font-medium">IBAN</p>
-                    <p className="text-muted-foreground font-mono text-xs break-all">{banking.VCPTE}</p>
+                    <p className="font-medium">Numéro de Compte</p>
+                    <p className="text-muted-foreground font-mono text-xs break-all">{banking.accountNumber}</p>
                   </div>
                   <div>
                     <p className="font-medium">Adresse de la Banque</p>
                     <p className="text-muted-foreground">
-                      {banking.VADR1}
+                      {banking.bankAddress}
                     </p>
                   </div>
                 </>
@@ -329,23 +365,35 @@ export default function PensionerDetailClient({ id }: { id: string }) {
                 <TableBody>
                     {operations.length > 0 ? (
                     operations.map((op, index) => {
-                        const type = op.FCDMVT === "C" ? "Crédit" : "Débit";
-                        const date = new Date(op.FAAREG, op.FMMREG - 1, op.FJJREG);
+                        const getOperationTypeText = (type: string) => {
+                          switch (type) {
+                            case 'PAYMENT': return 'Paiement';
+                            case 'BONUS': return 'Prime';
+                            case 'ADJUSTMENT': return 'Ajustement';
+                            case 'DEDUCTION': return 'Déduction';
+                            default: return type;
+                          }
+                        };
+                        
+                        const getOperationVariant = (type: string) => {
+                          return (type === 'PAYMENT' || type === 'BONUS') ? 'default' : 'destructive';
+                        };
+
                         return (
-                        <TableRow key={index}>
+                        <TableRow key={op.id || index}>
                             <TableCell>
-                            {format(date, "PPP", { locale: fr })}
+                            {format(new Date(op.timestamp), "PPP", { locale: fr })}
                             </TableCell>
                             <TableCell>
-                            <Badge variant={getOperationTypeVariant(type)}>{type}</Badge>
+                            <Badge variant={getOperationVariant(op.type)}>{getOperationTypeText(op.type)}</Badge>
                             </TableCell>
                             <TableCell className="font-medium">
-                            {op.FMTREG.toLocaleString("fr-FR", {
+                            {op.amount.toLocaleString("fr-MA", {
                                 style: "currency",
-                                currency: "EUR",
+                                currency: "MAD",
                             })}
                             </TableCell>
-                            <TableCell>{getPaymentMethodText(op.FMDREG)}</TableCell>
+                            <TableCell>{getPaymentMethodDisplayText(pensioner.paymentMethod)}</TableCell>
                         </TableRow>
                         );
                     })

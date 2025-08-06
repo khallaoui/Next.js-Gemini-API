@@ -25,53 +25,89 @@ import { useToast } from "@/hooks/use-toast";
 import { analyzePensionData } from "@/ai/flows/analyze-pension-data";
 import { Loader2, Sparkles, FileText, BarChartBig, BrainCircuit, Calendar as CalendarIcon, Filter } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import pensionersData from "@/data/pensioners.json";
-import operationsData from "@/data/operations.json";
+import { pensionerApi, operationApi } from "@/lib/api";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { fr } from 'date-fns/locale';
 
-const sampleData = JSON.stringify(pensionersData.slice(0, 5), null, 2);
-
 export default function AnalysisPage() {
   const { toast } = useToast();
-  const [pensionData, setPensionData] = React.useState(sampleData);
+  const [pensionData, setPensionData] = React.useState("");
   const [analysisType, setAnalysisType] = React.useState("trend identification");
   const [reportFormat, setReportFormat] = React.useState("text");
   const [result, setResult] = React.useState<{ report: string; summary: string } | null>(null);
   const [isLoading, setIsLoading] = React.useState(false);
   const [dateRange, setDateRange] = React.useState<DateRange | undefined>();
+  const [dataLoading, setDataLoading] = React.useState(false);
 
-  const handleApplyDateFilter = () => {
-    if (!dateRange?.from || !dateRange?.to) {
-      setPensionData(JSON.stringify(pensionersData, null, 2));
-      toast({
-        title: "Filtre réinitialisé",
-        description: "Affichage de toutes les données des pensionnaires.",
-      });
-      return;
+  // Load initial sample data
+  React.useEffect(() => {
+    async function loadSampleData() {
+      try {
+        const pensioners = await pensionerApi.getAll();
+        const sampleData = JSON.stringify(pensioners.slice(0, 5), null, 2);
+        setPensionData(sampleData);
+      } catch (error) {
+        console.error("Error loading sample data:", error);
+        setPensionData("[]");
+      }
     }
+    loadSampleData();
+  }, []);
 
-    const filteredOperations = operationsData.filter(op => {
-        const opDate = new Date(op.FAAREG, op.FMMREG - 1, op.FJJREG);
+  const handleApplyDateFilter = async () => {
+    setDataLoading(true);
+    try {
+      const [pensioners, operations] = await Promise.all([
+        pensionerApi.getAll(),
+        operationApi.getAll()
+      ]);
+
+      if (!dateRange?.from || !dateRange?.to) {
+        setPensionData(JSON.stringify(pensioners, null, 2));
+        toast({
+          title: "Filtre réinitialisé",
+          description: "Affichage de toutes les données des pensionnaires.",
+        });
+        return;
+      }
+
+      const filteredOperations = operations.filter(op => {
+        const opDate = new Date(op.timestamp);
         return opDate >= dateRange.from! && opDate <= dateRange.to!;
-    });
-    
-    const pensionerIdsWithOpsInDateRange = new Set(filteredOperations.map(op => op.FNDP));
+      });
+      
+      const pensionerIdsWithOpsInDateRange = new Set(
+        filteredOperations.map(op => op.pensioner?.id || op.pensionerId).filter(Boolean)
+      );
 
-    const filteredPensioners = pensionersData.filter(p => pensionerIdsWithOpsInDateRange.has(p.SCPTE));
-    
-    const dataToAnalyze = filteredPensioners.map(p => ({
+      const filteredPensioners = pensioners.filter(p => 
+        p.id && pensionerIdsWithOpsInDateRange.has(p.id)
+      );
+      
+      const dataToAnalyze = filteredPensioners.map(p => ({
         ...p,
-        operations: filteredOperations.filter(op => op.FNDP === p.SCPTE)
-    }));
+        operations: filteredOperations.filter(op => 
+          (op.pensioner?.id || op.pensionerId) === p.id
+        )
+      }));
 
-    setPensionData(JSON.stringify(dataToAnalyze, null, 2));
-    toast({
+      setPensionData(JSON.stringify(dataToAnalyze, null, 2));
+      toast({
         title: "Filtre appliqué",
         description: `Analyse des données pour ${dataToAnalyze.length} pensionnaires avec des opérations entre le ${format(dateRange.from, "PPP", { locale: fr })} et le ${format(dateRange.to, "PPP", { locale: fr })}.`,
       });
+    } catch (error) {
+      console.error("Error applying date filter:", error);
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Impossible de charger les données filtrées.",
+      });
+    } finally {
+      setDataLoading(false);
+    }
   };
 
   const handleAnalyze = async () => {

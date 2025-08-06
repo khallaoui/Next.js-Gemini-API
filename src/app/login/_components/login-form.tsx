@@ -19,6 +19,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { useToast } from "@/hooks/use-toast"
 import { Loader2 } from "lucide-react"
+import { auth } from "@/lib/auth"
 
 const formSchema = z.object({
   username: z.string().min(1, { message: "Le nom d'utilisateur est requis." }),
@@ -38,26 +39,34 @@ export function LoginForm() {
     },
   })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true)
-    // Simulate API call
-    setTimeout(() => {
-      if (values.username === "admin" && values.password === "admin123") {
-        localStorage.setItem("cimr-insights-auth", "true")
+    
+    try {
+      const result = await auth.login(values)
+      
+      if (result.success) {
         toast({
           title: "Connexion réussie",
-          description: "Bienvenue ! Redirection vers le tableau de bord.",
+          description: `Bienvenue ${result.user?.username}! Redirection vers le tableau de bord.`,
         })
         router.push("/")
       } else {
         toast({
           variant: "destructive",
           title: "Échec de la connexion",
-          description: "Nom d'utilisateur ou mot de passe invalide.",
+          description: result.error || "Nom d'utilisateur ou mot de passe invalide.",
         })
-        setIsLoading(false)
       }
-    }, 1000)
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Erreur de connexion",
+        description: "Une erreur est survenue lors de la connexion. Vérifiez que le serveur est démarré.",
+      })
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (

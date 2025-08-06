@@ -1,7 +1,7 @@
 "use client"
 
 import { Logo } from "@/components/icons";
-import { LoginForm } from "./_components/login-form";
+import { LoginFormSimple } from "./_components/login-form-simple";
 
 export default function LoginPage() {
   return (
@@ -17,7 +17,7 @@ export default function LoginPage() {
             </p>
         </div>
         <div className="bg-card p-6 rounded-lg border shadow-sm">
-            <LoginForm />
+            <LoginFormSimple />
         </div>
         <p className="text-center text-xs text-muted-foreground">
           &copy; {new Date().getFullYear()} CIMR. Tous droits réservés.

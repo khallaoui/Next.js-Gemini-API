@@ -13,8 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { type Pensioner } from "@/lib/types";
-import pensionersData from "@/data/pensioners.json";
+import { pensionerApi, type Pensioner } from "@/lib/api";
 import {
   Select,
   SelectContent,
@@ -23,113 +22,164 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Search, Users, Eye } from "lucide-react";
+import { Search, Users, Eye, Plus } from "lucide-react";
 
 export default function PensionersPage() {
-  const [pensioners, setPensioners] = React.useState<Pensioner[]>(pensionersData);
+  const [allPensioners, setAllPensioners] = React.useState<Pensioner[]>([]);
+  const [filteredPensioners, setFilteredPensioners] = React.useState<Pensioner[]>([]);
   const [searchTerm, setSearchTerm] = React.useState("");
   const [selectedCity, setSelectedCity] = React.useState("all");
   const [selectedPaymentMethod, setSelectedPaymentMethod] = React.useState("all");
-  const [selectedStatus, setSelectedStatus] = React.useState("all");
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState<string | null>(null);
+
+  // Fetch pensioners from API
+  React.useEffect(() => {
+    async function fetchPensioners() {
+      try {
+        setLoading(true);
+        const data = await pensionerApi.getAll();
+        setAllPensioners(data);
+        setFilteredPensioners(data);
+      } catch (err: any) {
+        console.error("Error fetching pensioners:", err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchPensioners();
+  }, []);
 
   const cities = React.useMemo(() => {
-    const allCities = pensionersData.map((p) => p.personalInfo.ville);
+    const allCities = allPensioners.map((p) => p.city);
     return ["all", ...Array.from(new Set(allCities))];
-  }, []);
+  }, [allPensioners]);
 
   const paymentMethods = React.useMemo(() => {
-    const allMethods = pensionersData.map((p) => p.paymentMethod);
+    const allMethods = allPensioners.map((p) => p.paymentMethod);
     return ["all", ...Array.from(new Set(allMethods))];
-  }, []);
-  
-  const statuses = React.useMemo(() => {
-    const allStatuses = pensionersData.map((p) => p.status);
-    return ["all", ...Array.from(new Set(allStatuses))];
-  }, []);
+  }, [allPensioners]);
 
+  // Filter pensioners based on search and filters
   React.useEffect(() => {
-    let filtered = pensionersData;
+    let filtered = allPensioners;
 
     if (searchTerm) {
       const lowercasedTerm = searchTerm.toLowerCase();
       filtered = filtered.filter(
         (pensioner) =>
-          pensioner.personalInfo.firstName.toLowerCase().includes(lowercasedTerm) ||
-          pensioner.personalInfo.lastName.toLowerCase().includes(lowercasedTerm) ||
-          String(pensioner.matricule).includes(lowercasedTerm) ||
-          String(pensioner.SCPTE).includes(lowercasedTerm)
+          pensioner.name.toLowerCase().includes(lowercasedTerm) ||
+          String(pensioner.id).includes(lowercasedTerm) ||
+          pensioner.phoneNumber?.toLowerCase().includes(lowercasedTerm)
       );
     }
 
     if (selectedCity !== "all") {
-      filtered = filtered.filter((p) => p.personalInfo.ville === selectedCity);
+      filtered = filtered.filter((p) => p.city === selectedCity);
     }
 
     if (selectedPaymentMethod !== "all") {
       filtered = filtered.filter((p) => p.paymentMethod === selectedPaymentMethod);
     }
-    
-    if (selectedStatus !== "all") {
-      filtered = filtered.filter((p) => p.status === selectedStatus);
+
+    setFilteredPensioners(filtered);
+  }, [searchTerm, selectedCity, selectedPaymentMethod, allPensioners]);
+
+  const getPaymentAmountVariant = (amount: number) => {
+    if (amount > 2500) return "default";
+    if (amount > 2000) return "secondary";
+    return "outline";
+  };
+
+  const getPaymentMethodText = (method: string) => {
+    switch (method) {
+      case 'BANK_TRANSFER': return 'Virement';
+      case 'CHECK': return 'Chèque';
+      case 'CASH': return 'Espèces';
+      case 'DIGITAL_WALLET': return 'Portefeuille numérique';
+      default: return method;
     }
-
-    setPensioners(filtered);
-  }, [searchTerm, selectedCity, selectedPaymentMethod, selectedStatus]);
-
-  const getStatusVariant = (netRgt: number) => {
-    if (netRgt > 2000) return "default";
-    if (netRgt > 1700) return "secondary";
-    return "outline";
-  };
-  
-  const getPensionerStatusVariant = (status: string) => {
-    if (status === "ACTIF") return "default";
-    if (status === "INACTIF") return "secondary";
-    return "outline";
   };
 
+  if (loading) {
+    return (
+      <div className="flex flex-col gap-6">
+        <header>
+          <h1 className="font-headline text-3xl font-bold flex items-center gap-3">
+            <Users className="h-8 w-8" />
+            Pensionnaires
+          </h1>
+          <p className="text-muted-foreground mt-1">
+            Chargement des données des pensionnaires...
+          </p>
+        </header>
+        <div className="animate-pulse space-y-4">
+          <div className="h-32 bg-gray-200 rounded-lg"></div>
+          <div className="h-96 bg-gray-200 rounded-lg"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col gap-6">
+        <header>
+          <h1 className="font-headline text-3xl font-bold flex items-center gap-3">
+            <Users className="h-8 w-8" />
+            Pensionnaires
+          </h1>
+        </header>
+        <div className="text-red-600 p-4 bg-red-50 rounded-lg border border-red-200">
+          <h3 className="font-semibold">Erreur lors du chargement des pensionnaires</h3>
+          <p className="text-sm mt-1">{error}</p>
+          <p className="text-xs mt-2 text-red-500">
+            Assurez-vous que le backend Spring Boot fonctionne sur http://localhost:8080
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-6">
-      <header>
-        <h1 className="font-headline text-3xl font-bold flex items-center gap-3">
+      <header className="flex justify-between items-start">
+        <div>
+          <h1 className="font-headline text-3xl font-bold flex items-center gap-3">
             <Users className="h-8 w-8" />
-            Adhérents Individuels & Allocataires
-        </h1>
-        <p className="text-muted-foreground mt-1">
-          Recherchez, filtrez et gérez les dossiers des adhérents et allocataires.
-        </p>
+            Pensionnaires
+          </h1>
+          <p className="text-muted-foreground mt-1">
+            Gérez les dossiers des pensionnaires et leurs informations.
+          </p>
+        </div>
+        <Button asChild>
+          <Link href="/pensioners/new">
+            <Plus className="mr-2 h-4 w-4" />
+            Nouveau Pensionnaire
+          </Link>
+        </Button>
       </header>
 
       <Card>
         <CardHeader>
-            <CardTitle>Filtres</CardTitle>
-            <CardDescription>Affinez la liste des pensionnaires à l'aide des filtres ci-dessous.</CardDescription>
+          <CardTitle>Filtres</CardTitle>
+          <CardDescription>Affinez la liste des pensionnaires à l'aide des filtres ci-dessous.</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col md:flex-row gap-4">
-           <div className="relative flex-1">
-             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Rechercher par nom, matricule, ou dossier..."
+              placeholder="Rechercher par nom, ID, ou téléphone..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
             />
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:flex">
-             <Select value={selectedStatus} onValueChange={setSelectedStatus}>
-              <SelectTrigger className="w-full md:w-[160px]">
-                <SelectValue placeholder="Filtrer par Statut" />
-              </SelectTrigger>
-              <SelectContent>
-                {statuses.map((status) => (
-                  <SelectItem key={status} value={status}>
-                    {status === "all" ? "Tous les statuts" : status}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-             <Select value={selectedCity} onValueChange={setSelectedCity}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:flex">
+            <Select value={selectedCity} onValueChange={setSelectedCity}>
               <SelectTrigger className="w-full md:w-[160px]">
                 <SelectValue placeholder="Filtrer par Ville" />
               </SelectTrigger>
@@ -142,13 +192,13 @@ export default function PensionersPage() {
               </SelectContent>
             </Select>
             <Select value={selectedPaymentMethod} onValueChange={setSelectedPaymentMethod}>
-              <SelectTrigger className="w-full md:w-[180px]">
+              <SelectTrigger className="w-full md:w-[200px]">
                 <SelectValue placeholder="Filtrer par Paiement" />
               </SelectTrigger>
               <SelectContent>
                 {paymentMethods.map((method) => (
                   <SelectItem key={method} value={method}>
-                    {method === "all" ? "Tous les paiements" : method}
+                    {method === "all" ? "Tous les paiements" : getPaymentMethodText(method)}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -163,40 +213,36 @@ export default function PensionersPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>N° Dossier</TableHead>
+                  <TableHead>ID</TableHead>
                   <TableHead>Nom Complet</TableHead>
-                  <TableHead>Statut</TableHead>
-                  <TableHead>Net Payé</TableHead>
                   <TableHead>Ville</TableHead>
+                  <TableHead>Paiement Mensuel</TableHead>
                   <TableHead>Mode de Paiement</TableHead>
+                  <TableHead>Téléphone</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {pensioners.length > 0 ? (
-                  pensioners.map((pensioner) => (
-                    <TableRow key={pensioner.SCPTE}>
-                      <TableCell className="font-medium">{pensioner.SCPTE}</TableCell>
+                {filteredPensioners.length > 0 ? (
+                  filteredPensioners.map((pensioner) => (
+                    <TableRow key={pensioner.id}>
+                      <TableCell className="font-medium">{pensioner.id}</TableCell>
+                      <TableCell className="font-medium">{pensioner.name}</TableCell>
+                      <TableCell>{pensioner.city}</TableCell>
                       <TableCell>
-                        {pensioner.personalInfo.firstName} {pensioner.personalInfo.lastName}
-                      </TableCell>
-                       <TableCell>
-                        <Badge variant={getPensionerStatusVariant(pensioner.status)}>{pensioner.status}</Badge>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant={getStatusVariant(pensioner.netPaid)} className="font-mono">
-                          {pensioner.netPaid.toLocaleString("fr-FR", {
+                        <Badge variant={getPaymentAmountVariant(pensioner.monthlyPayment)} className="font-mono">
+                          {pensioner.monthlyPayment.toLocaleString("fr-MA", {
                             style: "currency",
-                            currency: "EUR",
+                            currency: "MAD",
                           })}
                         </Badge>
                       </TableCell>
-                      <TableCell>{pensioner.personalInfo.ville}</TableCell>
-                      <TableCell>{pensioner.paymentMethod}</TableCell>
+                      <TableCell>{getPaymentMethodText(pensioner.paymentMethod)}</TableCell>
+                      <TableCell>{pensioner.phoneNumber || "N/A"}</TableCell>
                       <TableCell className="text-right">
                         <Button asChild variant="ghost" size="sm">
-                          <Link href={`/pensioners/${pensioner.SCPTE}`}>
-                            <Eye className="mr-2" />
+                          <Link href={`/pensioners/${pensioner.id}`}>
+                            <Eye className="mr-2 h-4 w-4" />
                             Voir Détails
                           </Link>
                         </Button>
@@ -206,7 +252,7 @@ export default function PensionersPage() {
                 ) : (
                   <TableRow>
                     <TableCell colSpan={7} className="h-24 text-center">
-                      Aucun résultat trouvé.
+                      Aucun pensionnaire trouvé.
                     </TableCell>
                   </TableRow>
                 )}
@@ -215,6 +261,10 @@ export default function PensionersPage() {
           </div>
         </CardContent>
       </Card>
+
+      <div className="text-sm text-muted-foreground">
+        Total: {filteredPensioners.length} pensionnaire(s) affiché(s) sur {allPensioners.length}
+      </div>
     </div>
   );
 }
