@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Card,
   CardContent,
@@ -9,8 +11,30 @@ import { StatsCards } from "@/components/dashboard/stats-cards"
 import { MonthlyPaymentsChart } from "@/components/dashboard/monthly-payments-chart"
 import { RecentActivity } from "@/components/dashboard/recent-activity"
 import { Home } from "lucide-react"
+import ChatWindow from "@/components/ChatWindow"
+import { pensionerApi } from "@/lib/api"
+import { useState, useEffect } from "react"
 
 export default function DashboardPage() {
+  const [dashboardData, setDashboardData] = useState("[]");
+
+  useEffect(() => {
+    async function loadDashboardData() {
+      try {
+        const pensioners = await pensionerApi.getAll();
+        const dashboardInfo = {
+          totalPensioners: pensioners.length,
+          pensioners: pensioners.slice(0, 10), // Sample for chat
+          summary: "Données du tableau de bord principal"
+        };
+        setDashboardData(JSON.stringify(dashboardInfo, null, 2));
+      } catch (error) {
+        console.error("Error loading dashboard data:", error);
+        setDashboardData(JSON.stringify({ error: "Données non disponibles" }, null, 2));
+      }
+    }
+    loadDashboardData();
+  }, []);
   return (
     <div className="flex flex-col gap-6">
       <header>
@@ -45,6 +69,9 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* AI Chat Window */}
+      <ChatWindow pensionData={dashboardData} />
     </div>
   )
 }

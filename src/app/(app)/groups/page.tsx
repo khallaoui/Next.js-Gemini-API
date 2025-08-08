@@ -22,9 +22,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Search, Users, Eye, Plus } from "lucide-react";
+import { Search, Users, Eye, Plus, Building } from "lucide-react";
+import ChatWindow from "@/components/ChatWindow";
 
-export default function PensionersPage() {
+export default function GroupsPage() {
   const [allPensioners, setAllPensioners] = React.useState<Pensioner[]>([]);
   const [filteredPensioners, setFilteredPensioners] = React.useState<Pensioner[]>([]);
   const [searchTerm, setSearchTerm] = React.useState("");
@@ -148,17 +149,17 @@ export default function PensionersPage() {
       <header className="flex justify-between items-start">
         <div>
           <h1 className="font-headline text-3xl font-bold flex items-center gap-3">
-            <Users className="h-8 w-8" />
-            Adhérents
+            <Building className="h-8 w-8" />
+            Groupes
           </h1>
           <p className="text-muted-foreground mt-1">
-            Gérez les dossiers des Adhérents et leurs informations.
+            Gérez les groupes de pensionnaires et leurs informations.
           </p>
         </div>
         <Button asChild>
-          <Link href="/pensioners/new">
+          <Link href="/groups/new">
             <Plus className="mr-2 h-4 w-4" />
-            Nouveau Pensionnaire
+            Nouveau Groupe
           </Link>
         </Button>
       </header>
@@ -265,6 +266,15 @@ export default function PensionersPage() {
       <div className="text-sm text-muted-foreground">
         Total: {filteredPensioners.length} pensionnaire(s) affiché(s) sur {allPensioners.length}
       </div>
+
+      {/* AI Chat Window */}
+      <ChatWindow pensionData={JSON.stringify({ 
+        groupData: filteredPensioners,
+        groupedByCity: cities.map(city => ({
+          city,
+          count: city === "all" ? allPensioners.length : allPensioners.filter(p => p.city === city).length
+        }))
+      }, null, 2)} />
     </div>
   );
 }

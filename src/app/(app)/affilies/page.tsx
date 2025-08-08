@@ -7,6 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import { Users, Eye, Plus } from "lucide-react";
 import Link from "next/link";
+import ChatWindow from "@/components/ChatWindow";
 
 export default function AffiliesPage() {
   const [affilies, setAffilies] = React.useState<Affilie[]>([]);
@@ -163,6 +164,9 @@ export default function AffiliesPage() {
       <div className="text-sm text-muted-foreground">
         Total: {affilies.length} affilié(s) affiché(s)
       </div>
+
+      {/* AI Chat Window */}
+      <ChatWindow pensionData={JSON.stringify(affilies, null, 2)} />
     </div>
   );
 }

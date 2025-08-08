@@ -17,6 +17,7 @@ import { Eye, Undo2 } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from 'date-fns/locale';
 import { operationApi, pensionerApi, type Operation, type Pensioner } from "@/lib/api";
+import ChatWindow from "@/components/ChatWindow";
 
 interface RefundOperation extends Operation {
   pensioner?: Pensioner;
@@ -181,6 +182,9 @@ export default function RefundsPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* AI Chat Window */}
+      <ChatWindow pensionData={JSON.stringify(refunds, null, 2)} />
     </div>
   );
 }

@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Search, Users, Eye, Plus } from "lucide-react";
+import ChatWindow from "@/components/ChatWindow";
 
 export default function PensionersPage() {
   const [allPensioners, setAllPensioners] = React.useState<Pensioner[]>([]);
@@ -265,6 +266,9 @@ export default function PensionersPage() {
       <div className="text-sm text-muted-foreground">
         Total: {filteredPensioners.length} pensionnaire(s) affiché(s) sur {allPensioners.length}
       </div>
+
+      {/* AI Chat Window */}
+      <ChatWindow pensionData={JSON.stringify(filteredPensioners, null, 2)} />
     </div>
   );
 }

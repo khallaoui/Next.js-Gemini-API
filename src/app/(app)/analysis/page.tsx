@@ -30,6 +30,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { fr } from 'date-fns/locale';
+import ChatWindow from "@/components/ChatWindow";
 
 export default function AnalysisPage() {
   const { toast } = useToast();
@@ -308,6 +309,9 @@ export default function AnalysisPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* AI Chat Window */}
+      <ChatWindow pensionData={pensionData} />
     </div>
   );
 }

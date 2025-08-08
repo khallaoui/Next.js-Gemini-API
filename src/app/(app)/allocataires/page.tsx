@@ -7,6 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import { Users, Eye, Plus } from "lucide-react";
 import Link from "next/link";
+import ChatWindow from "@/components/ChatWindow";
 
 export default function AllocatairesPage() {
   const [allocataires, setAllocataires] = React.useState<Allocataire[]>([]);
@@ -147,6 +148,9 @@ export default function AllocatairesPage() {
       <div className="text-sm text-muted-foreground">
         Total: {allocataires.length} allocataire(s) affiché(s)
       </div>
+
+      {/* AI Chat Window */}
+      <ChatWindow pensionData={JSON.stringify(allocataires, null, 2)} />
     </div>
   );
 }
