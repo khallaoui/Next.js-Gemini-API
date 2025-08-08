@@ -51,7 +51,7 @@ Your Next.js app is running on port 9002, so update your Spring Boot CORS config
 CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
     configuration.setAllowedOriginPatterns(Arrays.asList(
-        "http://localhost:3000",  // Default Next.js port
+        "http://localhost:9002",  // Default Next.js port
         "http://localhost:9002"   // Your current port
     ));
     configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
@@ -125,7 +125,7 @@ Create a simple test file to verify the backend:
 - Clear browser cache
 
 #### Solution C: Port Conflicts
-- Change Next.js port to 3000: `npm run dev -- -p 3000`
+- Change Next.js port to 9002: `npm run dev -- -p 9002`
 - Or update `.env` file: `NEXT_PUBLIC_API_URL=http://localhost:YOUR_SPRING_BOOT_PORT`
 
 #### Solution D: Firewall/Network Issues

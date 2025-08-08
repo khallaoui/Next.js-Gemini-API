@@ -1,5 +1,5 @@
 // API configuration
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api';
 
 // Types matching the Spring Boot backend
 export interface Pensioner {
@@ -63,9 +63,27 @@ export interface CompanyGroup {
   city: string;
 }
 
+export interface Affilie {
+  idAffilie: number;
+  matricule: string;
+  nom: string;
+  prenom: string;
+  actif: boolean;
+  ayantDroit: boolean;
+  adherentId: number;
+}
+
+export interface Allocataire {
+  idAllocataire: number;
+  numeroDossier: string;
+  nom: string;
+  prenom: string;
+  affilieId: number;
+}
+
 // Generic API request function with Spring Security session support
 async function apiRequest<T>(endpoint: string, options?: RequestInit): Promise<T> {
-  const url = `${API_BASE_URL}/api${endpoint}`;
+  const url = `${API_BASE_URL}${endpoint}`;
   
   const config: RequestInit = {
     headers: {
@@ -326,6 +344,72 @@ export const companyGroupApi = {
     apiRequest<void>(`/company-groups/${id}`, {
       method: 'DELETE',
     }),
+};
+
+// Affilie API functions
+export const affilieApi = {
+  // Get all affilies
+  getAll: (): Promise<Affilie[]> => 
+    apiRequest<Affilie[]>('/affilies'),
+
+  // Get affilie by ID
+  getById: (id: number): Promise<Affilie> => 
+    apiRequest<Affilie>(`/affilies/${id}`),
+
+  // Create new affilie
+  create: (affilie: Omit<Affilie, 'idAffilie'>): Promise<Affilie> => 
+    apiRequest<Affilie>('/affilies', {
+      method: 'POST',
+      body: JSON.stringify(affilie),
+    }),
+
+  // Update affilie
+  update: (id: number, affilie: Omit<Affilie, 'idAffilie'>): Promise<Affilie> => 
+    apiRequest<Affilie>(`/affilies/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(affilie),
+    }),
+
+  // Delete affilie
+  delete: (id: number): Promise<void> => 
+    apiRequest<void>(`/affilies/${id}`, {
+      method: 'DELETE',
+    }),
+};
+
+// Allocataire API functions
+export const allocataireApi = {
+  // Get all allocataires
+  getAll: (): Promise<Allocataire[]> => 
+    apiRequest<Allocataire[]>('/allocataires'),
+
+  // Get allocataire by ID
+  getById: (id: number): Promise<Allocataire> => 
+    apiRequest<Allocataire>(`/allocataires/${id}`),
+
+  // Create new allocataire
+  create: (allocataire: Omit<Allocataire, 'idAllocataire'>): Promise<Allocataire> => 
+    apiRequest<Allocataire>('/allocataires', {
+      method: 'POST',
+      body: JSON.stringify(allocataire),
+    }),
+
+  // Update allocataire
+  update: (id: number, allocataire: Omit<Allocataire, 'idAllocataire'>): Promise<Allocataire> => 
+    apiRequest<Allocataire>(`/allocataires/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(allocataire),
+    }),
+
+  // Delete allocataire
+  delete: (id: number): Promise<void> => 
+    apiRequest<void>(`/allocataires/${id}`, {
+      method: 'DELETE',
+    }),
+
+  // Get allocataires by affilie ID
+  getByAffilieId: (affilieId: number): Promise<Allocataire[]> => 
+    apiRequest<Allocataire[]>(`/allocataires/affilie/${affilieId}`),
 };
 
 // Legacy function for backward compatibility

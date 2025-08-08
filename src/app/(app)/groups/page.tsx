@@ -13,6 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { pensionerApi, type Pensioner } from "@/lib/api";
 import {
   Select,
   SelectContent,
@@ -21,71 +22,97 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Search, Building, Eye, Users, Plus } from "lucide-react";
-import { companyGroupApi, type CompanyGroup } from "@/lib/api";
+import { Search, Users, Eye, Plus } from "lucide-react";
 
-export default function GroupsPage() {
-  const [allGroups, setAllGroups] = React.useState<CompanyGroup[]>([]);
-  const [filteredGroups, setFilteredGroups] = React.useState<CompanyGroup[]>([]);
+export default function PensionersPage() {
+  const [allPensioners, setAllPensioners] = React.useState<Pensioner[]>([]);
+  const [filteredPensioners, setFilteredPensioners] = React.useState<Pensioner[]>([]);
   const [searchTerm, setSearchTerm] = React.useState("");
-  const [selectedSector, setSelectedSector] = React.useState("all");
+  const [selectedCity, setSelectedCity] = React.useState("all");
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = React.useState("all");
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
 
-  // Fetch groups from API
+  // Fetch pensioners from API
   React.useEffect(() => {
-    async function fetchGroups() {
+    async function fetchPensioners() {
       try {
         setLoading(true);
-        const data = await companyGroupApi.getAll();
-        setAllGroups(data);
-        setFilteredGroups(data);
+        const data = await pensionerApi.getAll();
+        setAllPensioners(data);
+        setFilteredPensioners(data);
       } catch (err: any) {
-        console.error("Error fetching company groups:", err);
+        console.error("Error fetching pensioners:", err);
         setError(err.message);
       } finally {
         setLoading(false);
       }
     }
 
-    fetchGroups();
+    fetchPensioners();
   }, []);
 
-  const sectors = React.useMemo(() => {
-    const allSectors = allGroups.map((g) => g.sector);
-    return ["all", ...Array.from(new Set(allSectors))];
-  }, [allGroups]);
+  const cities = React.useMemo(() => {
+    const allCities = allPensioners.map((p) => p.city);
+    return ["all", ...Array.from(new Set(allCities))];
+  }, [allPensioners]);
 
-  // Filter groups based on search and filters
+  const paymentMethods = React.useMemo(() => {
+    const allMethods = allPensioners.map((p) => p.paymentMethod);
+    return ["all", ...Array.from(new Set(allMethods))];
+  }, [allPensioners]);
+
+  // Filter pensioners based on search and filters
   React.useEffect(() => {
-    let filtered = allGroups;
+    let filtered = allPensioners;
 
     if (searchTerm) {
       const lowercasedTerm = searchTerm.toLowerCase();
       filtered = filtered.filter(
-        (group) =>
-          group.companyName.toLowerCase().includes(lowercasedTerm) ||
-          group.city.toLowerCase().includes(lowercasedTerm)
+        (pensioner) =>
+          pensioner.name.toLowerCase().includes(lowercasedTerm) ||
+          String(pensioner.id).includes(lowercasedTerm) ||
+          pensioner.phoneNumber?.toLowerCase().includes(lowercasedTerm)
       );
     }
 
-    if (selectedSector !== "all") {
-      filtered = filtered.filter((g) => g.sector === selectedSector);
+    if (selectedCity !== "all") {
+      filtered = filtered.filter((p) => p.city === selectedCity);
     }
 
-    setFilteredGroups(filtered);
-  }, [searchTerm, selectedSector, allGroups]);
+    if (selectedPaymentMethod !== "all") {
+      filtered = filtered.filter((p) => p.paymentMethod === selectedPaymentMethod);
+    }
+
+    setFilteredPensioners(filtered);
+  }, [searchTerm, selectedCity, selectedPaymentMethod, allPensioners]);
+
+  const getPaymentAmountVariant = (amount: number) => {
+    if (amount > 2500) return "default";
+    if (amount > 2000) return "secondary";
+    return "outline";
+  };
+
+  const getPaymentMethodText = (method: string) => {
+    switch (method) {
+      case 'BANK_TRANSFER': return 'Virement';
+      case 'CHECK': return 'Chèque';
+      case 'CASH': return 'Espèces';
+      case 'DIGITAL_WALLET': return 'Portefeuille numérique';
+      default: return method;
+    }
+  };
 
   if (loading) {
     return (
       <div className="flex flex-col gap-6">
         <header>
           <h1 className="font-headline text-3xl font-bold flex items-center gap-3">
-            <Building className="h-8 w-8" />
-            Adhérents en Groupe
+            <Users className="h-8 w-8" />
+            Adhérents
           </h1>
           <p className="text-muted-foreground mt-1">
-            Chargement des données des groupes d'entreprises...
+            Chargement des données des Adhérents...
           </p>
         </header>
         <div className="animate-pulse space-y-4">
@@ -101,12 +128,12 @@ export default function GroupsPage() {
       <div className="flex flex-col gap-6">
         <header>
           <h1 className="font-headline text-3xl font-bold flex items-center gap-3">
-            <Building className="h-8 w-8" />
-            Adhérents en Groupe
+            <Users className="h-8 w-8" />
+            Adhérents
           </h1>
         </header>
         <div className="text-red-600 p-4 bg-red-50 rounded-lg border border-red-200">
-          <h3 className="font-semibold">Erreur lors du chargement des groupes</h3>
+          <h3 className="font-semibold">Erreur lors du chargement des Adhérents</h3>
           <p className="text-sm mt-1">{error}</p>
           <p className="text-xs mt-2 text-red-500">
             Assurez-vous que le backend Spring Boot fonctionne sur http://localhost:8080
@@ -118,40 +145,60 @@ export default function GroupsPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <header>
-        <h1 className="font-headline text-3xl font-bold flex items-center gap-3">
-            <Building className="h-8 w-8" />
-            Adhérents en Groupe
-        </h1>
-        <p className="text-muted-foreground mt-1">
-          Consultez et filtrez les entreprises adhérentes.
-        </p>
+      <header className="flex justify-between items-start">
+        <div>
+          <h1 className="font-headline text-3xl font-bold flex items-center gap-3">
+            <Users className="h-8 w-8" />
+            Adhérents
+          </h1>
+          <p className="text-muted-foreground mt-1">
+            Gérez les dossiers des Adhérents et leurs informations.
+          </p>
+        </div>
+        <Button asChild>
+          <Link href="/pensioners/new">
+            <Plus className="mr-2 h-4 w-4" />
+            Nouveau Pensionnaire
+          </Link>
+        </Button>
       </header>
 
       <Card>
         <CardHeader>
-            <CardTitle>Filtres</CardTitle>
-            <CardDescription>Affinez la liste des groupes à l'aide des filtres ci-dessous.</CardDescription>
+          <CardTitle>Filtres</CardTitle>
+          <CardDescription>Affinez la liste des Adhérents à l'aide des filtres ci-dessous.</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col md:flex-row gap-4">
-           <div className="relative flex-1">
-             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Rechercher par nom d'entreprise..."
+              placeholder="Rechercher par nom, ID, ou téléphone..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
             />
           </div>
-          <div className="grid grid-cols-1 gap-4 md:flex">
-             <Select value={selectedSector} onValueChange={setSelectedSector}>
-              <SelectTrigger className="w-full md:w-[200px]">
-                <SelectValue placeholder="Filtrer par Secteur" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:flex">
+            <Select value={selectedCity} onValueChange={setSelectedCity}>
+              <SelectTrigger className="w-full md:w-[160px]">
+                <SelectValue placeholder="Filtrer par Ville" />
               </SelectTrigger>
               <SelectContent>
-                {sectors.map((sector) => (
-                  <SelectItem key={sector} value={sector}>
-                    {sector === "all" ? "Tous les secteurs" : sector}
+                {cities.map((city) => (
+                  <SelectItem key={city} value={city}>
+                    {city === "all" ? "Toutes les villes" : city}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={selectedPaymentMethod} onValueChange={setSelectedPaymentMethod}>
+              <SelectTrigger className="w-full md:w-[200px]">
+                <SelectValue placeholder="Filtrer par Paiement" />
+              </SelectTrigger>
+              <SelectContent>
+                {paymentMethods.map((method) => (
+                  <SelectItem key={method} value={method}>
+                    {method === "all" ? "Tous les paiements" : getPaymentMethodText(method)}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -166,38 +213,36 @@ export default function GroupsPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Nom de l'Entreprise</TableHead>
-                  <TableHead>Secteur</TableHead>
+                  <TableHead>ID</TableHead>
+                  <TableHead>Nom Complet</TableHead>
                   <TableHead>Ville</TableHead>
-                  <TableHead>Nombre d'Adhérents</TableHead>
-                  <TableHead>Contribution Totale</TableHead>
+                  <TableHead>Paiement Mensuel</TableHead>
+                  <TableHead>Mode de Paiement</TableHead>
+                  <TableHead>Téléphone</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredGroups.length > 0 ? (
-                  filteredGroups.map((group) => (
-                    <TableRow key={group.id}>
-                      <TableCell className="font-medium">{group.companyName}</TableCell>
+                {filteredPensioners.length > 0 ? (
+                  filteredPensioners.map((pensioner) => (
+                    <TableRow key={pensioner.id}>
+                      <TableCell className="font-medium">{pensioner.id}</TableCell>
+                      <TableCell className="font-medium">{pensioner.name}</TableCell>
+                      <TableCell>{pensioner.city}</TableCell>
                       <TableCell>
-                        <Badge variant="secondary">{group.sector}</Badge>
+                        <Badge variant={getPaymentAmountVariant(pensioner.monthlyPayment)} className="font-mono">
+                          {pensioner.monthlyPayment.toLocaleString("fr-MA", {
+                            style: "currency",
+                            currency: "MAD",
+                          })}
+                        </Badge>
                       </TableCell>
-                      <TableCell>{group.city}</TableCell>
-                      <TableCell className="flex items-center gap-2">
-                        <Users className="h-4 w-4 text-muted-foreground" /> 
-                        {group.memberCount}
-                      </TableCell>
-                      <TableCell className="font-mono">
-                        {group.totalContribution.toLocaleString("fr-FR", {
-                          style: "currency",
-                          currency: "EUR",
-                        })}
-                      </TableCell>
+                      <TableCell>{getPaymentMethodText(pensioner.paymentMethod)}</TableCell>
+                      <TableCell>{pensioner.phoneNumber || "N/A"}</TableCell>
                       <TableCell className="text-right">
                         <Button asChild variant="ghost" size="sm">
-                          {/* This would link to a group detail page */}
-                          <Link href="#">
-                            <Eye className="mr-2" />
+                          <Link href={`/pensioners/${pensioner.id}`}>
+                            <Eye className="mr-2 h-4 w-4" />
                             Voir Détails
                           </Link>
                         </Button>
@@ -206,8 +251,8 @@ export default function GroupsPage() {
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={6} className="h-24 text-center">
-                      Aucun groupe trouvé.
+                    <TableCell colSpan={7} className="h-24 text-center">
+                      Aucun pensionnaire trouvé.
                     </TableCell>
                   </TableRow>
                 )}
@@ -216,6 +261,10 @@ export default function GroupsPage() {
           </div>
         </CardContent>
       </Card>
+
+      <div className="text-sm text-muted-foreground">
+        Total: {filteredPensioners.length} pensionnaire(s) affiché(s) sur {allPensioners.length}
+      </div>
     </div>
   );
 }

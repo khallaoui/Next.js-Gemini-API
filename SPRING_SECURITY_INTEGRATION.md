@@ -178,7 +178,7 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOriginPatterns(Arrays.asList(
-            "http://localhost:3000",  // Default Next.js port
+            "http://localhost:9002",  // Default Next.js port
             "http://localhost:9002"   // Alternative port
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
@@ -256,7 +256,7 @@ public class UserDetailsConfig {
 
 1. Start your Spring Boot application with the security configuration
 2. Start the Next.js application (`npm run dev`)
-3. Navigate to `http://localhost:3000`
+3. Navigate to `http://localhost:9002`
 4. You should be redirected to `/login`
 5. Enter valid credentials configured in your Spring Security
 6. Upon successful login, you'll be redirected to the dashboard
@@ -264,7 +264,7 @@ public class UserDetailsConfig {
 
 ## Troubleshooting
 
-- **CORS Issues**: Ensure your Spring Boot CORS configuration allows `http://localhost:3000` with credentials
+- **CORS Issues**: Ensure your Spring Boot CORS configuration allows `http://localhost:9002` with credentials
 - **Session Issues**: Check that your Spring Security is configured for session management
 - **Login Failures**: Verify the `/api/auth/login` endpoint returns user information on success
 - **API Failures**: Ensure all protected endpoints require authentication in Spring Security

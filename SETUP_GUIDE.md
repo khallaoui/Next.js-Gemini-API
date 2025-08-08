@@ -18,7 +18,7 @@ npm install
 npm run dev
 ```
 
-The application will be available at `http://localhost:3000`
+The application will be available at `http://localhost:9002`
 
 ### 2. Backend Setup (Spring Boot)
 
@@ -49,7 +49,7 @@ Create `src/main/java/com/pension/config/UserDetailsConfig.java` with the code f
 
 1. Start your Spring Boot application
 2. Start the Next.js application
-3. Navigate to `http://localhost:3000`
+3. Navigate to `http://localhost:9002`
 4. You should be redirected to the login page
 5. Use these credentials:
    - **Username**: `admin`
@@ -75,7 +75,7 @@ The backend provides:
 - **POST** `/api/auth/logout` - Invalidate session
 - **GET** `/api/auth/me` - Get current authenticated user
 - Session-based authentication using `JSESSIONID` cookie
-- CORS configuration allowing requests from `http://localhost:3000`
+- CORS configuration allowing requests from `http://localhost:9002`
 
 ## 🔐 Default Users
 
@@ -112,7 +112,7 @@ All endpoints except `/api/auth/login` and `/api/auth/logout` require authentica
 ### Common Issues
 
 1. **CORS Errors**
-   - Ensure your Spring Boot app allows `http://localhost:3000` with credentials
+   - Ensure your Spring Boot app allows `http://localhost:9002` with credentials
    - Check that `setAllowCredentials(true)` is set in CORS configuration
 
 2. **Session Not Persisting**

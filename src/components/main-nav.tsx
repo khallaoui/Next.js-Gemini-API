@@ -23,6 +23,8 @@ export function MainNav() {
   const menuItems = [
     { href: "/", label: "Tableau de Bord", icon: Home },
     { href: "/pensioners", label: "Adhérents", icon: Users },
+    { href: "/affilies", label: "Affiliés", icon: Users },
+    { href: "/allocataires", label: "Allocataires", icon: Users },
     { href: "/groups", label: "Groupes", icon: Building },
     { href: "/refunds", label: "Remboursements", icon: Undo2 },
     { href: "/analysis", label: "Analyse IA", icon: BrainCircuit },

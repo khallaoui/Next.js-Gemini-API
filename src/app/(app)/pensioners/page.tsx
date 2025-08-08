@@ -109,10 +109,10 @@ export default function PensionersPage() {
         <header>
           <h1 className="font-headline text-3xl font-bold flex items-center gap-3">
             <Users className="h-8 w-8" />
-            Pensionnaires
+            Adhérents
           </h1>
           <p className="text-muted-foreground mt-1">
-            Chargement des données des pensionnaires...
+            Chargement des données des Adhérents...
           </p>
         </header>
         <div className="animate-pulse space-y-4">
@@ -129,11 +129,11 @@ export default function PensionersPage() {
         <header>
           <h1 className="font-headline text-3xl font-bold flex items-center gap-3">
             <Users className="h-8 w-8" />
-            Pensionnaires
+            Adhérents
           </h1>
         </header>
         <div className="text-red-600 p-4 bg-red-50 rounded-lg border border-red-200">
-          <h3 className="font-semibold">Erreur lors du chargement des pensionnaires</h3>
+          <h3 className="font-semibold">Erreur lors du chargement des Adhérents</h3>
           <p className="text-sm mt-1">{error}</p>
           <p className="text-xs mt-2 text-red-500">
             Assurez-vous que le backend Spring Boot fonctionne sur http://localhost:8080
@@ -149,10 +149,10 @@ export default function PensionersPage() {
         <div>
           <h1 className="font-headline text-3xl font-bold flex items-center gap-3">
             <Users className="h-8 w-8" />
-            Pensionnaires
+            Adhérents
           </h1>
           <p className="text-muted-foreground mt-1">
-            Gérez les dossiers des pensionnaires et leurs informations.
+            Gérez les dossiers des Adhérents et leurs informations.
           </p>
         </div>
         <Button asChild>
@@ -166,7 +166,7 @@ export default function PensionersPage() {
       <Card>
         <CardHeader>
           <CardTitle>Filtres</CardTitle>
-          <CardDescription>Affinez la liste des pensionnaires à l'aide des filtres ci-dessous.</CardDescription>
+          <CardDescription>Affinez la liste des Adhérents à l'aide des filtres ci-dessous.</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col md:flex-row gap-4">
           <div className="relative flex-1">
