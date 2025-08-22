@@ -125,13 +125,7 @@ export function LoginFormSimple() {
         </form>
       </Form>
       
-      <div className="text-sm text-muted-foreground text-center space-y-1">
-        <p className="font-medium">Comptes de test:</p>
-        <div className="bg-muted p-3 rounded-lg space-y-1">
-          <p><strong>admin</strong> / admin123</p>
-          <p><strong>user</strong> / password</p>
-        </div>
-      </div>
+    
     </div>
   )
 }

@@ -19,7 +19,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { useToast } from "@/hooks/use-toast"
 import { Loader2 } from "lucide-react"
-import { auth } from "@/lib/auth"
+import { useAuth } from "@/contexts/auth-context"
 
 const formSchema = z.object({
   username: z.string().min(1, { message: "Le nom d'utilisateur est requis." }),
@@ -29,6 +29,7 @@ const formSchema = z.object({
 export function LoginFormDebug() {
   const router = useRouter()
   const { toast } = useToast()
+  const { login } = useAuth()
   const [isLoading, setIsLoading] = React.useState(false)
   const [debugInfo, setDebugInfo] = React.useState<string[]>([])
 
@@ -52,14 +53,14 @@ export function LoginFormDebug() {
     try {
       addDebugInfo(`Attempting login with username: ${values.username}`)
       
-      // First try with backend
-      const result = await auth.login(values)
+      // Use the proper auth context login method
+      const result = await login(values)
       addDebugInfo(`Login result: ${JSON.stringify(result)}`)
       
       if (result.success) {
-        addDebugInfo(`Login successful for user: ${result.user?.username}`)
+        addDebugInfo(`Login successful for user: ${values.username}`)
         
-        // Check localStorage
+        // Check localStorage after successful login
         const authState = localStorage.getItem('cimr-authenticated')
         const userInfo = localStorage.getItem('cimr-user')
         addDebugInfo(`LocalStorage auth state: ${authState}`)
@@ -67,7 +68,7 @@ export function LoginFormDebug() {
         
         toast({
           title: "Connexion réussie",
-          description: `Bienvenue ${result.user?.username}! Redirection vers le tableau de bord.`,
+          description: `Bienvenue ${values.username}! Redirection vers le tableau de bord.`,
         })
         
         addDebugInfo('Redirecting to dashboard in 2 seconds...')
@@ -78,77 +79,23 @@ export function LoginFormDebug() {
           router.push("/")
         }, 2000)
       } else {
-        addDebugInfo(`Backend login failed: ${result.error}`)
+        addDebugInfo(`Login failed: ${result.error}`)
         
-        // If backend fails, try fallback authentication for testing
-        if ((values.username === 'admin' && values.password === 'admin123') || 
-            (values.username === 'user' && values.password === 'password')) {
-          
-          addDebugInfo('Backend failed, using fallback authentication...')
-          
-          // Manually set authentication state
-          localStorage.setItem('cimr-authenticated', 'true')
-          localStorage.setItem('cimr-user', JSON.stringify({ 
-            username: values.username, 
-            roles: values.username === 'admin' ? ['ADMIN', 'USER'] : ['USER'] 
-          }))
-          
-          addDebugInfo('Fallback authentication successful')
-          addDebugInfo(`LocalStorage auth state: ${localStorage.getItem('cimr-authenticated')}`)
-          
-          toast({
-            title: "Connexion réussie (Fallback)",
-            description: `Bienvenue ${values.username}! Redirection vers le tableau de bord.`,
-          })
-          
-          addDebugInfo('Redirecting to dashboard in 2 seconds...')
-          
-          setTimeout(() => {
-            addDebugInfo('Executing router.push("/")...')
-            router.push("/")
-          }, 2000)
-        } else {
-          toast({
-            variant: "destructive",
-            title: "Échec de la connexion",
-            description: result.error || "Nom d'utilisateur ou mot de passe invalide.",
-          })
-        }
+        toast({
+          variant: "destructive",
+          title: "Échec de la connexion",
+          description: result.error || "Nom d'utilisateur ou mot de passe invalide.",
+        })
       }
     } catch (error) {
       addDebugInfo(`Login error: ${error}`)
       console.error('Login error:', error)
       
-      // Fallback for network errors
-      if ((values.username === 'admin' && values.password === 'admin123') || 
-          (values.username === 'user' && values.password === 'password')) {
-        
-        addDebugInfo('Network error, using fallback authentication...')
-        
-        localStorage.setItem('cimr-authenticated', 'true')
-        localStorage.setItem('cimr-user', JSON.stringify({ 
-          username: values.username, 
-          roles: values.username === 'admin' ? ['ADMIN', 'USER'] : ['USER'] 
-        }))
-        
-        toast({
-          title: "Connexion réussie (Fallback)",
-          description: `Bienvenue ${values.username}! Backend indisponible mais connexion autorisée.`,
-        })
-        
-        addDebugInfo('Fallback authentication successful, redirecting...')
-        
-        setTimeout(() => {
-          addDebugInfo('Executing router.push("/")...')
-          router.push("/")
-        }, 2000)
-      } else {
-        toast({
-          variant: "destructive",
-          title: "Erreur de connexion",
-          description: "Une erreur est survenue lors de la connexion. Vérifiez que le serveur est démarré.",
-        })
-      }
+      toast({
+        variant: "destructive",
+        title: "Erreur de connexion",
+        description: "Une erreur est survenue lors de la connexion.",
+      })
     } finally {
       setIsLoading(false)
     }
