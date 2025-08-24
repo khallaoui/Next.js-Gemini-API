@@ -1,104 +1,90 @@
-# MOHAMED KHALLAOUI - CV
+# 🏦 Pension Management System
 
-**Full Stack Developer | SAP Technical Consultant**  
-*Building scalable solutions at the intersection of modern web development and enterprise SAP systems*
+> A modern, full-stack pension management application with real-time analytics and AI integration.
 
----
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2-green.svg)](https://spring.io/projects/spring-boot)
+[![Next.js](https://img.shields.io/badge/Next.js-15.0-blue.svg)](https://nextjs.org/)
+[![MySQL](https://img.shields.io/badge/MySQL-8.0-orange.svg)](https://www.mysql.com/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue.svg)](https://www.typescriptlang.org/)
+[![License](https://img.shields.io/badge/License-Apache%202.0-yellow.svg)](https://opensource.org/licenses/Apache-2.0)
 
-## 📞 Contact Information
-
-**Phone:** +212 624-433295  
-**Email:** med.khallaoui4@gmail.com  
-**Location:** Kenitra, Morocco  
-**LinkedIn:** [linkedin.com/in/mohamed-khallaoui](https://linkedin.com/in/mohamed-khallaoui)  
-**GitHub:** [github.com/khallaoui](https://github.com/khallaoui)  
+A comprehensive **full-stack pension management application** featuring a **Next.js frontend** integrated with a **Spring Boot backend**. The system provides real-time pensioner management, operations tracking, group administration, and advanced analytics. All static data has been replaced with dynamic API calls, making it **production-ready**, type-safe, and scalable.
 
 ---
 
-## 🎯 Professional Summary
+## 📑 Table of Contents
 
-Results-driven and versatile Full Stack Developer with 2+ years of experience building robust web applications and providing technical SAP consultancy. Proven expertise in the Java/Spring ecosystem and modern JavaScript frameworks (Angular, React). Passionate about leveraging cloud technologies and solving complex business problems through clean, efficient code. A collaborative team player eager to contribute to innovative projects in an international environment.
-
----
-
-## 🛠️ Technical Skills
-
-**Programming Languages:** Java, JavaScript, TypeScript, ABAP, Python, PL/SQL, SQL  
-**Backend Frameworks:** Spring Boot, Spring MVC, JEE, Node.js, Express.js, Django  
-**Frontend Frameworks:** Angular, React, Next.js, SAP UI5, Fiori, HTML5, CSS3, Bootstrap  
-**SAP Technologies:** SAP ERP, SAP S/4HANA, SAP BTP, OData Services, RESTful APIs, CAP (Cloud Application Programming Model), RAP (RESTful ABAP Programming), SAP HANA, SAP Analytics Cloud (SAC)  
-**Databases:** Oracle, MySQL, PostgreSQL, Microsoft Access, SAP HANA  
-**Tools & Methods:** Git, GitHub, GitLab, Postman, Jira, Trello, Slack, UML, WinDev, WebDev, Scrum, Agile  
-
----
-
-## 💼 Professional Experience
-
-### **SAP Technical Consultant** | AtlionTech, Kenitra  
-*May 2024 – January 2025*  
-- Developed and customized solutions on SAP S/4HANA (Cloud and On-Premise) using ABAP and the SAP Business Technology Platform (BTP) to meet specific client requirements.
-- Built modern Fiori applications and robust OData services using the RAP and CAP frameworks, enhancing user experience and system integration.
-- Optimized database performance by writing efficient SQL Scripts and creating CDS views for SAP HANA, improving reporting performance.
-- Gained exposure to SAP Analytics Cloud (SAC) for business intelligence and planning applications.
-
-### **Full Stack Developer** | Le Premier Système, Kenitra  
-*April 2023 – June 2023*  
-- Engineered a full-stack production management system for the food service industry, reducing manual reporting time by an estimated 25%.
-- Implemented the backend with Java, Spring Boot, and Spring MVC and designed the responsive frontend using JavaScript and Bootstrap.
-- Modeled the database schema and managed data with MySQL, ensuring data integrity and performance.
-
-### **Developer** | i-Soft Network, Kenitra  
-*August 2023 – October 2023*  
-- Gained proficiency in rapid application development for desktop, web, and mobile platforms using WinDev and WebDev.
-
-### **Developer (Academic Projects)** | Public Library & Administration  
-*2021 – 2022*  
-- Developed two separate desktop applications for library management using Java Swing/JDBC and VB.NET, improving data organization and retrieval.  
-- **GitHub Repository:** [Public Library App](https://github.com/khallaoui/public-library-app)
+- [Features](#-features)
+- [Architecture](#-architecture)
+- [Prerequisites](#-prerequisites)
+- [Quick Start](#-quick-start)
+- [Environment Variables](#-environment-variables)
+- [API Documentation](#-api-documentation)
+- [Key Benefits](#-key-benefits)
+- [Troubleshooting](#-troubleshooting)
+- [Migration Notes](#-migration-notes)
+- [Future Enhancements](#-future-enhancements)
+- [License](#-license)
 
 ---
 
-## 🚀 Projects
+## 🚀 Features
 
-### **Marketplace Web Service** | Java, Spring Boot
-- Developed a secure RESTful API for a multi-vendor marketplace, handling user authentication, product cataloging, and transaction processing.
+### **Dashboard**
+- 📊 Real-time pensioner statistics and metrics
+- 📈 Interactive payment trends and charts
+- 🔔 Recent activity feed and notifications
+- 🗺️ Dynamic city and payment method distributions
 
-### **Next.js Gemini AI App** | Next.js, Gemini API
-- Built an interactive web application integrating Google's Gemini AI to provide intelligent user responses, showcasing ability to work with modern AI APIs.
+### **Pensioners Management**
+- ✅ Complete CRUD operations (Create, Read, Update, Delete)
+- 🔍 Real-time search and advanced filtering
+- 📋 Full operation history per pensioner
+- 📱 Responsive UI with comprehensive error handling
 
-### **Blockchain DApp** | Solidity, React
-- Created a decentralized application on the Ethereum blockchain using smart contracts and a React frontend to explore Web3 development.
+### **Company Groups**
+- 🏢 Complete CRUD for company groups management
+- 🏙️ Sector and city-based filtering capabilities
+- 👥 Real-time member counts and contributions tracking
+- 🔎 Live search functionality
 
----
+### **Operations & Refunds**
+- 💰 Real deduction and refund operations processing
+- 🔗 Proper pensioner linking and relationship management
+- 📊 Full historical data with real backend integration
 
-## 🎓 Education
-
-**Master’s in Software Engineering for Cloud Computing** | *2024 – Present*  
-Ibn Tofail University, Faculty of Sciences, Kenitra  
-
-**Bachelor’s in Computer Engineering** | *2022 – 2023*  
-Higher School of Technology, Kenitra  
-
-**Higher Technician Diploma in Software Development** | *2020 – 2022*  
-Moulay Ismail Technical High School, Meknes  
-
----
-
-## 🌐 Languages
-
-- **Arabic:** Native Proficiency
-- **Tamazight:** Native Proficiency
-- **French:** Professional Proficiency (Fluent)
-- **English:** Professional Proficiency (Fluent)
+### **Analytics & AI**
+- 🤖 Dynamic AI analysis using real operations data
+- 📅 Customizable date filters and reporting periods
+- 📝 Comprehensive pensioner record summaries
 
 ---
 
-## 🎯 Interests
-
-- **Volleyball:** Team Collaboration & Strategy
-- **Chess:** Strategic Planning & Problem-Solving
-- **Researching Emerging Technologies:** AI, Blockchain, Cloud Computing
-
----
-
-*References available upon request.*
+## 🏗️ Architecture
+pension-management-system/
+├── frontend/ # Next.js 15 Application
+│ ├── src/
+│ │ ├── components/ # Reusable React components
+│ │ ├── pages/ # Next.js pages and routing
+│ │ ├── services/ # API service layer
+│ │ └── types/ # TypeScript type definitions
+│ ├── public/ # Static assets
+│ ├── package.json
+│ └── next.config.js
+└── backend/ # Spring Boot 3.2 Application
+├── src/
+│ ├── main/
+│ │ ├── java/
+│ │ │ └── com/
+│ │ │ └── pension/
+│ │ │ ├── controller/ # REST controllers
+│ │ │ ├── service/ # Business logic
+│ │ │ ├── repository/ # Data access layer
+│ │ │ ├── model/ # Entity classes
+│ │ │ └── config/ # Configuration
+│ │ └── resources/
+│ │ ├── application.properties
+│ │ └── data.sql # Sample data
+│ └── test/ # Test classes
+├── pom.xml
+└── Dockerfile
