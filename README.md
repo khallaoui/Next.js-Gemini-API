@@ -1,10 +1,10 @@
-# 🏦 Pension Management System
+#  Pension Management System
 
 A **full-stack pension management application** with a **Next.js frontend** integrated with a **Spring Boot backend**. The system provides real-time pensioner, operations, group, and analytics management. All static data has been replaced with dynamic API calls from Spring Boot, making it **production-ready**, type-safe, and scalable.
 
 ---
 
-## 🚀 Features
+##  Features
 
 ### **Dashboard**
 - Real-time pensioner statistics
@@ -36,7 +36,7 @@ A **full-stack pension management application** with a **Next.js frontend** inte
 
 ---
 
-## 📦 Project Structure
+##  Project Structure
 
 ```
 spring app/
@@ -52,7 +52,7 @@ spring app/
 
 ---
 
-## 🛠️ Prerequisites
+##  Prerequisites
 
 - **Node.js** 18+
 - **Java** 17+
@@ -62,7 +62,7 @@ spring app/
 
 ---
 
-## ⚡ Quick Start
+##  Quick Start
 
 ### 1. Start the Spring Boot Backend
 ```bash
@@ -84,7 +84,7 @@ npm run dev
 
 ---
 
-## 🔧 Environment Variables
+##  Environment Variables
 
 ```env
 GEMINI_API_KEY=your_gemini_api_key
@@ -95,7 +95,7 @@ NEXT_PUBLIC_API_URL=http://localhost:8080
 
 ---
 
-## 📝 API Endpoints
+##  API Endpoints
 
 ### Pensioners
 
@@ -142,7 +142,7 @@ GET /api/demandes/pensioner/{id}
 
 ---
 
-## 🎯 Key Benefits
+##  Key Benefits
 
 ### **For Developers**
 
@@ -166,7 +166,7 @@ GET /api/demandes/pensioner/{id}
 
 ---
 
-## 🐛 Troubleshooting
+##  Troubleshooting
 
 ### Common Issues
 
@@ -183,7 +183,7 @@ curl http://localhost:8080/api/pensioners
 
 ---
 
-## 🏆 Migration Notes
+##  Migration Notes
 
 * All static JSON data replaced with live API calls
 * 15+ components updated for backend integration
@@ -193,7 +193,7 @@ curl http://localhost:8080/api/pensioners
 
 ---
 
-## 📚 Next Steps / Enhancements
+##  Next Steps / Enhancements
 
 * Real-time updates via WebSockets
 * Advanced filtering and search
@@ -203,6 +203,6 @@ curl http://localhost:8080/api/pensioners
 
 ---
 
-## 📌 License
+##  License
 
 This project is **open source** and uses **Apache 2.0** for code samples and **Creative Commons Attribution 4.0** for documentation.
